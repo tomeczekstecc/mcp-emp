@@ -115,6 +115,61 @@ statistics, user profile, and MCP API-key auth for the HTTP transport.
 
 ---
 
+## [1.0.0] — 2026-05-30 (P3 — Bulk, Templates, Automation)
+
+### Added
+
+#### Bulk operations (2 tools)
+
+| Tool | Description |
+|---|---|
+| `bulk_create_tasks` | Create multiple tasks at once. Step 1: validates + preview + token. Step 2: creates all. |
+| `bulk_delete_tasks` | Delete multiple W_EDYCJI tasks at once. Same two-step confirmation pattern. |
+
+Both use confirmation tokens (5-min TTL, payload-hash bound) identical to `delete_task`.
+
+#### Task templates (3 new capabilities)
+
+**CLI:** `mcp-emp template add|list|show|delete`
+- SQLite store at `~/.mcp_emp/templates.db` (configurable via `MCP_EMP_TEMPLATES_DB_PATH`)
+- Supports `{today}`, `{date}`, `{cycle}` variable substitution in subject/notes
+- `deadline_offset_days` — auto-set deadline N days from today
+
+**MCP tools:**
+| Tool | Description |
+|---|---|
+| `list_templates` | List saved templates (with optional search filter). |
+| `apply_template` | Create a task from a template; subject/deadline overrides supported; dry_run. |
+
+#### Automation analysis (2 tools)
+
+| Tool | Description |
+|---|---|
+| `detect_recurring_tasks` | Find task types appearing ≥ N times; suggests representative subjects. Identifies candidates for templates. |
+| `suggest_task_completions` | Rank REALIZOWANE tasks by completion urgency: overdue > near-deadline > high-points > long-running. |
+
+### Total: 29 tools
+
+### CLI additions
+
+| Command | Description |
+|---|---|
+| `mcp-emp template init` | Initialise template DB (auto-created on first use) |
+| `mcp-emp template add <name> --task-type-id <id> ...` | Create a template |
+| `mcp-emp template list [--search <q>]` | List templates |
+| `mcp-emp template show <name>` | Show full template JSON |
+| `mcp-emp template delete <name>` | Remove a template |
+
+### SemVer contract locked
+
+From 1.0.0, breaking changes require a MAJOR bump:
+- Tool names
+- Tool input parameter names and types
+- Error code strings
+- Envelope shape (error.data.code, error.data.details)
+
+---
+
 ## [0.3.0] — 2026-05-30 (P2 — Smart Assistance)
 
 ### Added

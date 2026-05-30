@@ -6,6 +6,8 @@ from mcp.server.fastmcp import FastMCP
 
 from mcp_emp.core.modes import mutating, readable
 from mcp_emp.domains.rejestr.client import (
+    bulk_create_my_tasks,
+    bulk_delete_my_tasks,
     complete_my_task,
     create_my_task,
     delete_my_task,
@@ -619,3 +621,218 @@ def register(server: FastMCP) -> None:
 
         tasks = sorted(tasks, key=lambda t: t.ordered_at or t.id, reverse=True)
         return tasks[:min(limit, 500)]
+
+    # ── P3: Bulk operations ──────────────────────────────────────────────────
+
+    @server.tool()
+    @mutating
+    async def bulk_create_tasks(
+        tasks: list[dict[str, object]],
+        confirmation_token: str = "",
+        dry_run: bool = False,
+    ) -> dict[str, object]:
+        """Create multiple tasks at once with a two-step confirmation.
+
+        Each task dict needs: task_type_id (required), plus optional subject,
+        deadline, notes, url, sod_number, tag_ids.
+
+        Step 1 (no token): validates, returns preview + confirmation_token.
+        Step 2 (with token): creates all tasks.
+
+        Args:
+            tasks:              List of task dicts.
+            confirmation_token: Token from step 1.
+            dry_run:            Validate and preview without issuing token.
+        """
+        import hashlib  # noqa: PLC0415
+        import json as _json  # noqa: PLC0415
+
+        from mcp_emp.core import confirmations  # noqa: PLC0415
+        from mcp_emp.core.config import get_settings  # noqa: PLC0415
+        from mcp_emp.core.errors import ValidationFailed  # noqa: PLC0415
+        from mcp_emp.domains.slowniki.cache import get_or_load  # noqa: PLC0415
+        from mcp_emp.domains.slowniki.client import fetch_task_types  # noqa: PLC0415
+
+        if not tasks:
+            raise ValidationFailed("tasks list must not be empty.", {})
+
+        s = get_settings()
+        task_types = await get_or_load("task_types", fetch_task_types, s.task_type_ttl)
+        tt_map = {t.id: t for t in task_types}
+
+        for i, t in enumerate(tasks):
+            tid = t.get("task_type_id")
+            if not tid or not isinstance(tid, (int, float)):
+                raise ValidationFailed(
+                    f"tasks[{i}]: task_type_id={tid} not found.",
+                    {"index": i, "task_type_id": tid},
+                )
+
+        raw = _json.dumps(tasks, sort_keys=True, ensure_ascii=False).encode()
+        bulk_resource_id = int(hashlib.sha256(raw).hexdigest()[:8], 16) % (2**31)
+
+        preview = [
+            {"index": i,
+             "task_type": tt_map.get(int(t["task_type_id"])) and tt_map[int(t["task_type_id"])].name,  # type: ignore[call-overload]  # type: ignore[index]
+             "subject": t.get("subject")}
+            for i, t in enumerate(tasks)
+        ]
+
+        if dry_run:
+            return {"dry_run": True, "count": len(tasks), "preview": preview}
+
+        if confirmation_token:
+            canonical: dict[str, object] = {"tasks": tasks}
+            await confirmations.consume(
+                token=confirmation_token, op="bulk_create",
+                resource_id=bulk_resource_id, payload=canonical,
+            )
+            created = await bulk_create_my_tasks(tasks)
+            return {"created": len(created), "task_ids": [t.id for t in created]}
+
+        canonical2: dict[str, object] = {"tasks": tasks}
+        tok = await confirmations.issue("bulk_create", bulk_resource_id, canonical2)
+        return {"preview": preview, "confirmation_token": tok,
+                "expires_in_seconds": confirmations.TOKEN_TTL,
+                "note": f"Call again with confirmation_token='{tok}' to create."}
+
+    @server.tool()
+    @mutating
+    async def bulk_delete_tasks(
+        task_ids: list[int],
+        confirmation_token: str = "",
+        dry_run: bool = False,
+    ) -> dict[str, object]:
+        """Delete multiple W_EDYCJI (draft) tasks at once.
+
+        Step 1 (no token): previews + issues confirmation token.
+        Step 2 (with token): executes the deletes.
+        Tasks not in W_EDYCJI are silently skipped.
+
+        Args:
+            task_ids:           Task IDs to delete.
+            confirmation_token: Token from step 1.
+            dry_run:            Preview without issuing token.
+        """
+        import asyncio as _asyncio  # noqa: PLC0415
+        import hashlib  # noqa: PLC0415
+        import json as _json  # noqa: PLC0415
+
+        from mcp_emp.core import confirmations  # noqa: PLC0415
+        from mcp_emp.core.errors import ValidationFailed  # noqa: PLC0415
+        from mcp_emp.domains.rejestr.status import Status  # noqa: PLC0415
+
+        if not task_ids:
+            raise ValidationFailed("task_ids must not be empty.", {})
+
+        fetched = await _asyncio.gather(
+            *[fetch_task(tid) for tid in task_ids], return_exceptions=True
+        )
+        deletable, skipped = [], []
+        for tid, result in zip(task_ids, fetched, strict=False):
+            if isinstance(result, BaseException):
+                skipped.append({"task_id": tid, "reason": str(result)})
+            elif isinstance(result, Task) and result.status != Status.W_EDYCJI:
+                skipped.append({"task_id": tid, "reason": f"status={result.status}"})
+            elif isinstance(result, Task):
+                deletable.append(result)
+
+        preview = [{"task_id": t.id, "subject": t.subject} for t in deletable]
+
+        if dry_run:
+            return {"dry_run": True, "would_delete": len(deletable),
+                    "preview": preview, "skipped": skipped}
+
+        sorted_ids = sorted(t.id for t in deletable)
+        raw = _json.dumps(sorted_ids).encode()
+        bulk_resource_id = int(hashlib.sha256(raw).hexdigest()[:8], 16) % (2**31)
+
+        if confirmation_token:
+            canonical: dict[str, object] = {"task_ids": sorted_ids}
+            await confirmations.consume(
+                token=confirmation_token, op="bulk_del",
+                resource_id=bulk_resource_id, payload=canonical,
+            )
+            results = await bulk_delete_my_tasks([t.id for t in deletable])
+            return {"deleted": sum(1 for v in results.values() if v == "deleted"),
+                    "results": results, "skipped": skipped}
+
+        canonical2: dict[str, object] = {"task_ids": sorted_ids}
+        tok = await confirmations.issue("bulk_del", bulk_resource_id, canonical2)
+        return {"would_delete": len(deletable), "preview": preview, "skipped": skipped,
+                "confirmation_token": tok, "expires_in_seconds": confirmations.TOKEN_TTL,
+                "note": f"Call again with confirmation_token='{tok}' to delete."}
+
+    # ── P3: Templates ─────────────────────────────────────────────────────────
+
+    @server.tool()
+    @readable
+    async def list_templates(search: str = "") -> list[dict[str, object]]:
+        """List saved task templates (created via: mcp-emp template add <name> ...).
+
+        Args:
+            search: Substring filter on template name.
+        """
+        from pathlib import Path  # noqa: PLC0415
+
+        from mcp_emp.core.config import get_settings  # noqa: PLC0415
+        from mcp_emp.core.templates.db import list_templates as _lt  # noqa: PLC0415
+        from mcp_emp.core.templates.db import open_templates_db  # noqa: PLC0415
+
+        s = get_settings()
+        conn = open_templates_db(Path(s.templates_db_path).expanduser())
+        return [{"name": t.name, "task_type_id": t.task_type_id,
+                 "subject_template": t.subject_template,
+                 "notes_template": t.notes_template,
+                 "deadline_offset_days": t.deadline_offset_days,
+                 "tag_ids": t.tag_ids}
+                for t in _lt(conn, search=search)]
+
+    @server.tool()
+    @mutating
+    async def apply_template(
+        name: str,
+        subject: str = "",
+        deadline: str = "",
+        dry_run: bool = False,
+    ) -> dict[str, object]:
+        """Create a task from a saved template.
+
+        Supports {today}/{date} and {cycle} in subject/notes templates.
+        Manage: mcp-emp template add|list|delete
+
+        Args:
+            name:     Template name (from list_templates).
+            subject:  Override the template subject.
+            deadline: Override the template deadline (ISO 8601).
+            dry_run:  Preview without creating.
+        """
+        from pathlib import Path  # noqa: PLC0415
+
+        from mcp_emp.core.config import get_settings  # noqa: PLC0415
+        from mcp_emp.core.errors import ValidationFailed  # noqa: PLC0415
+        from mcp_emp.core.templates.db import get_template, open_templates_db  # noqa: PLC0415
+
+        s = get_settings()
+        conn = open_templates_db(Path(s.templates_db_path).expanduser())
+        tmpl = get_template(conn, name)
+        if not tmpl:
+            raise ValidationFailed(
+                f"Template not found: {name}. Use list_templates().",
+                {"name": name},
+            )
+        rendered = tmpl.render(subject_override=subject or None,
+                               deadline_override=deadline or None)
+        if dry_run:
+            return {"dry_run": True, "template": name, "would_create": rendered}
+
+        task = await create_my_task(
+            task_type_id=int(rendered["task_type_id"]),  # type: ignore[call-overload]
+            subject=rendered.get("subject") or None,  # type: ignore[arg-type]
+            deadline=rendered.get("deadline") or None,  # type: ignore[arg-type]
+            notes=rendered.get("notes") or None,  # type: ignore[arg-type]
+            tag_ids=rendered.get("tag_ids") or None,  # type: ignore[arg-type]
+        )
+        return {"created": True, "template": name, "task_id": task.id,
+                "subject": task.subject, "status": task.status}
+

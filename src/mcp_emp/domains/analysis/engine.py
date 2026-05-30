@@ -6,6 +6,7 @@ No HTTP calls here. All inputs come from other domain clients.
 from __future__ import annotations
 
 from collections import Counter, defaultdict
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 
 from mcp_emp.domains.analysis.contract import (
@@ -275,3 +276,136 @@ def compute_task_type_stats(tasks: list[Task], *, days: int = 30) -> TaskTypeSta
         total_tasks=len(recent),
         task_types=stats,
     )
+
+
+# ── Recurring patterns ────────────────────────────────────────────────────────
+
+
+
+@dataclass
+class RecurringPattern:
+    """A detected recurring work pattern."""
+    task_type_id: int | None
+    task_type_name: str | None
+    example_subject: str | None
+    count: int
+    avg_points: float
+    suggested_subject: str | None
+
+
+def detect_recurring_patterns(
+    tasks: list[Task],
+    *,
+    min_count: int = 3,
+) -> list[RecurringPattern]:
+    """Find task types + subject patterns that appear repeatedly."""
+    from collections import defaultdict as _dd
+
+    # Group by task_type_id
+    by_type: dict[int | None, list[Task]] = _dd(list)
+    for t in tasks:
+        by_type[t.task_type.id].append(t)
+
+    patterns = []
+    for tid, ttasks in by_type.items():
+        if len(ttasks) < min_count:
+            continue
+        avg_pts = sum(t.points or 0 for t in ttasks) / len(ttasks)
+        # pick most common subject words as suggested subject
+        subjects = [t.subject or "" for t in ttasks if t.subject]
+        suggested = _most_common_subject(subjects)
+        patterns.append(RecurringPattern(
+            task_type_id=tid,
+            task_type_name=ttasks[0].task_type.name,
+            example_subject=subjects[0] if subjects else None,
+            count=len(ttasks),
+            avg_points=round(avg_pts, 2),
+            suggested_subject=suggested,
+        ))
+
+    return sorted(patterns, key=lambda p: -p.count)
+
+
+def _most_common_subject(subjects: list[str]) -> str | None:
+    if not subjects:
+        return None
+    from collections import Counter as _C
+    words: _C[str] = _C()
+    for s in subjects:
+        words.update(s.casefold().split())
+    # Remove very short words
+    top = [w for w, _ in words.most_common(5) if len(w) > 3]
+    return " ".join(top[:3]).title() if top else subjects[0][:40]
+
+
+# ── Completion suggestions ────────────────────────────────────────────────────
+
+@dataclass
+class CompletionSuggestion:
+    """A task suggested for completion with a priority score."""
+    task_id: int
+    subject: str | None
+    status: str
+    score: float         # higher = more urgent
+    reason: str
+    deadline: str | None
+    days_running: int | None
+
+
+def prioritize_completions(
+    tasks: list[Task],
+    *,
+    limit: int = 10,
+) -> list[CompletionSuggestion]:
+    """Rank REALIZOWANE tasks by completion urgency."""
+    today = date.today()
+    candidates = [t for t in tasks if t.status == Status.REALIZOWANE]
+    suggestions = []
+
+    for t in candidates:
+        score = 0.0
+        reasons: list[str] = []
+
+        deadline_date: date | None = None
+        if t.deadline:
+            d = t.deadline
+            deadline_date = d.date() if isinstance(d, datetime) else d
+
+        # Overdue: very high urgency
+        if deadline_date and deadline_date < today:
+            days_over = (today - deadline_date).days
+            score += 100 + days_over * 5
+            reasons.append(f"overdue by {days_over} day(s)")
+
+        # Near deadline (within 3 days)
+        elif deadline_date and (deadline_date - today).days <= 3:
+            score += 60
+            reasons.append(f"deadline in {(deadline_date - today).days} day(s)")
+
+        # High points
+        if (t.points or 0) >= 5:
+            score += 20
+            reasons.append(f"{t.points} points")
+
+        # Long running without deadline
+        days_running: int | None = None
+        if t.started_at:
+            s = t.started_at
+            start = s.date() if isinstance(s, datetime) else s
+            days_running = (today - start).days
+            if days_running >= 7 and not deadline_date:
+                score += 10 + days_running
+                reasons.append(f"running {days_running} days, no deadline")
+
+        if score > 0 or days_running:
+            suggestions.append(CompletionSuggestion(
+                task_id=t.id,
+                subject=t.subject,
+                status=t.status,
+                score=round(score, 1),
+                reason="; ".join(reasons) if reasons else "in progress",
+                deadline=deadline_date.isoformat() if deadline_date else None,
+                days_running=days_running,
+            ))
+
+    return sorted(suggestions, key=lambda s: -s.score)[:limit]

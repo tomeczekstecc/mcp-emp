@@ -15,11 +15,12 @@ data, statistics, and user info.
 |---|---|
 | **Reference data** | `list_task_types`, `list_tags` |
 | **Tasks — read** | `list_my_tasks`, `get_task`, `list_team_tasks` |
-| **Tasks — write** | `add_my_task`, `complete_task`, `edit_task`, `delete_task` |
+| **Tasks — write** | `add_my_task`, `complete_task`, `edit_task`, `delete_task`, `bulk_create_tasks`, `bulk_delete_tasks` |
 | **Tasks — lifecycle** | `start_task`, `reject_task`, `withdraw_task` |
 | **User** | `get_my_profile`, `get_my_permissions`, `list_users` |
 | **Statistics** | `get_cycle_stats`, `get_daily_stats`, `get_team_cycle_stats` |
 | **Server health** | `health_check` |
+| **Templates** | `list_templates`, `apply_template` |
 
 Key behaviours:
 - **Dry-run** on all mutating tools — preview before committing.

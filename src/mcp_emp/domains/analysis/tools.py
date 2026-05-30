@@ -126,3 +126,74 @@ def register(server: FastMCP) -> None:
         tasks = await fetch_my_tasks("moje-wszystkie")
         return compute_task_type_stats(tasks, days=days)
 
+
+    @server.tool()
+    @readable
+    async def detect_recurring_tasks(
+        min_count: int = 3,
+    ) -> list[dict[str, object]]:
+        """Detect recurring work patterns in task history.
+
+        Finds task types that appear at least min_count times and suggests
+        a representative subject based on the most common keywords.
+        Useful for identifying candidates for templates.
+
+        Args:
+            min_count: Minimum occurrences to count as recurring (default 3).
+
+        Returns:
+            List of patterns sorted by frequency, each with task_type_name,
+            count, avg_points, and a suggested_subject.
+        """
+        from mcp_emp.domains.analysis.engine import detect_recurring_patterns  # noqa: PLC0415
+        from mcp_emp.domains.rejestr.client import fetch_my_tasks  # noqa: PLC0415
+
+        tasks = await fetch_my_tasks("moje-wszystkie")
+        patterns = detect_recurring_patterns(tasks, min_count=min_count)
+        return [
+            {
+                "task_type_id": p.task_type_id,
+                "task_type_name": p.task_type_name,
+                "count": p.count,
+                "avg_points": p.avg_points,
+                "example_subject": p.example_subject,
+                "suggested_subject": p.suggested_subject,
+            }
+            for p in patterns
+        ]
+
+    @server.tool()
+    @readable
+    async def suggest_task_completions(
+        limit: int = 10,
+    ) -> list[dict[str, object]]:
+        """Suggest which REALIZOWANE tasks to complete next, by priority.
+
+        Scoring factors (highest score = most urgent):
+        - Overdue (deadline passed): very high
+        - Deadline within 3 days: high
+        - High point value: medium
+        - Long-running without deadline: low
+
+        Args:
+            limit: Max number of suggestions (default 10).
+
+        Returns:
+            List of task suggestions sorted by urgency score.
+        """
+        from mcp_emp.domains.analysis.engine import prioritize_completions  # noqa: PLC0415
+        from mcp_emp.domains.rejestr.client import fetch_my_tasks  # noqa: PLC0415
+
+        tasks = await fetch_my_tasks("moje-wszystkie")
+        suggestions = prioritize_completions(tasks, limit=limit)
+        return [
+            {
+                "task_id": s.task_id,
+                "subject": s.subject,
+                "score": s.score,
+                "reason": s.reason,
+                "deadline": s.deadline,
+                "days_running": s.days_running,
+            }
+            for s in suggestions
+        ]

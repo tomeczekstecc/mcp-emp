@@ -304,3 +304,34 @@ async def fetch_team_tasks(scope: str = "") -> list[Task]:
         )
     payload = RejestrListPayload.model_validate(r.json())
     return [map_task_from_list(p) for p in payload.list]
+
+
+async def bulk_create_my_tasks(
+    tasks: list[dict[str, object]],
+) -> list[Task]:
+    """Create multiple tasks sequentially. Returns all created Tasks."""
+    results = []
+    for t in tasks:
+        created = await create_my_task(
+            task_type_id=int(t["task_type_id"]),  # type: ignore[call-overload]
+            subject=str(t["subject"]) if t.get("subject") else None,
+            deadline=str(t["deadline"]) if t.get("deadline") else None,
+            notes=str(t["notes"]) if t.get("notes") else None,
+            url=str(t["url"]) if t.get("url") else None,
+            sod_number=str(t["sod_number"]) if t.get("sod_number") else None,
+            tag_ids=[int(x) for x in list(t["tag_ids"])] if t.get("tag_ids") else None,  # type: ignore[call-overload]
+        )
+        results.append(created)
+    return results
+
+
+async def bulk_delete_my_tasks(task_ids: list[int]) -> dict[int, str]:
+    """Delete multiple tasks. Returns {task_id: 'deleted'|'error: ...'} map."""
+    results: dict[int, str] = {}
+    for tid in task_ids:
+        try:
+            await delete_my_task(tid)
+            results[tid] = "deleted"
+        except Exception as e:  # noqa: BLE001
+            results[tid] = f"error: {e}"
+    return results

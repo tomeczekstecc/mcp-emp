@@ -47,6 +47,9 @@ class Settings(BaseSettings):
     auth_enabled: bool = False
     auth_db_path: str = "~/.mcp_emp/auth.db"
 
+    # Task templates
+    templates_db_path: str = "~/.mcp_emp/templates.db"
+
 
 _settings: Settings | None = None
 

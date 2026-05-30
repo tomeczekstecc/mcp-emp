@@ -20,6 +20,13 @@ def main_sync() -> None:
         run_auth_cli(args[1:])
         return
 
+    # Route template sub-commands
+    if args and args[0] == "template":
+        from mcp_emp.core.templates.cli import run_template_cli  # noqa: PLC0415
+
+        run_template_cli(args[1:])
+        return
+
     from mcp_emp.server import main  # noqa: PLC0415
 
     asyncio.run(main())
