@@ -115,6 +115,47 @@ statistics, user profile, and MCP API-key auth for the HTTP transport.
 
 ---
 
+## [1.1.0] — 2026-05-30
+
+### Added
+
+#### EMP task automation skills (3 new pi/Claude Code skills)
+
+| Skill | Trigger | What it does |
+|---|---|---|
+| `emp-log-task` | "dodaj zadanie do EMP", "zaloguj pracę" | Interactive: pick type, tag by repo, dry-run, create + complete + backdate |
+| `emp-complete-task` | "zakończ zadanie", "complete EMP task" | Find open task by ID/description, check permissions, complete it |
+| `emp-commit-and-log` | "commit i zaloguj", "push and log" | Git commit + push AND create matching EMP task in one flow; auto-maps commit type → EMP type, detects repo → tag |
+
+#### Direct DB access control
+
+-  config flag (default )
+- When :  is **not registered** — absent from tools/list
+- When :  available with full DB access
+-  raises clear error when disabled
+
+#### Host integration documentation
+
+New guide:  — copy-paste configs for:
+- Claude Desktop (Windows/macOS)
+- Claude Code
+- Cursor
+- pi (auto-import from Cursor + project-local)
+- OpenAI Codex CLI (TOML format)
+- Cline / Continue (VS Code)
+- HTTP hosts: n8n, ChatGPT MCP, Claude.ai
+- MCP Inspector (testing)
+- macOS/Linux path equivalents
+- Troubleshooting quick-reference
+
+### Changed
+
+- All host configs updated with 
+-  links to new host-integrations guide
+- README updated with host-integrations reference
+
+---
+
 ## [1.0.0] — 2026-05-30 (P3 — Bulk, Templates, Automation)
 
 ### Added
