@@ -50,6 +50,13 @@ class Settings(BaseSettings):
     # Task templates
     templates_db_path: str = "~/.mcp_emp/templates.db"
 
+    # Direct EMP PostgreSQL access (for date backdating)
+    db_host: str = ""          # e.g. https://emp-db.slaskie.pl (scheme stripped)
+    db_port: int = 5432
+    db_user: str = ""
+    db_pass: SecretStr = SecretStr("")
+    db_database: str = ""
+
 
 _settings: Settings | None = None
 
