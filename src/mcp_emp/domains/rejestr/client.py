@@ -166,9 +166,12 @@ async def edit_my_task(
     quantity: float | None = None,
     time: str | None = None,
     tag_ids: list[int] | None = None,
+    ordered_at: str | None = None,
 ) -> Task:
     """PUT /rejestr — update task fields (any non-ZAKOŃCZONE task).
 
+    ordered_at maps to data_zlecenia + data_rozpoczecia + data_gotowe
+    (all three must be updated together for consistent month attribution).
     Returns the updated task fetched after the edit.
     """
     body: dict[str, object] = {"id": task_id}
@@ -190,6 +193,12 @@ async def edit_my_task(
         body["czas"] = time
     if tag_ids is not None:
         body["tags"] = tag_ids
+    if ordered_at is not None:
+        # Set all three date fields so monthly reports attribute correctly
+        emp_dt = ordered_at.replace("T", " ").replace("+00:00", "")[:19]
+        body["data_zlecenia"] = emp_dt
+        body["data_rozpoczecia"] = emp_dt
+        body["data_gotowe"] = emp_dt
 
     r = await get_client().put("/rejestr", json=body, headers=await _bearer())
     if r.status_code == 404:

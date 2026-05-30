@@ -439,6 +439,7 @@ def register(server: FastMCP) -> None:
         quantity: float | None = None,
         time: str = "",
         tag_ids: list[int] | None = None,
+        ordered_at: str = "",
         dry_run: bool = False,
     ) -> Task:
         """Edit an existing task's fields (PUT /rejestr).
@@ -457,6 +458,10 @@ def register(server: FastMCP) -> None:
             quantity:   Quantity (ilosc).
             time:       Time spent in HH:MM format.
             tag_ids:    Full list of tag IDs to set (replaces existing tags).
+            ordered_at: Override the order date — ISO 8601 or YYYY-MM-DD (e.g.
+                        "2026-01-15"). Sets data_zlecenia + data_rozpoczecia so
+                        the task is attributed to the correct month in reports.
+                        Useful for retroactively logging tasks from past months.
             dry_run:    Preview without calling EMP.
 
         Returns:
@@ -487,6 +492,7 @@ def register(server: FastMCP) -> None:
             quantity=quantity,
             time=time or None,
             tag_ids=tag_ids,
+            ordered_at=ordered_at or None,
         )
 
     @server.tool()
