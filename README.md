@@ -14,10 +14,11 @@ data, statistics, and user info.
 | Area | Tools |
 |---|---|
 | **Reference data** | `list_task_types`, `list_tags` |
-| **Tasks — read** | `list_my_tasks`, `get_task` |
-| **Tasks — write** | `add_my_task`, `complete_task`, `delete_task` |
+| **Tasks — read** | `list_my_tasks`, `get_task`, `list_team_tasks` |
+| **Tasks — write** | `add_my_task`, `complete_task`, `edit_task`, `delete_task` |
+| **Tasks — lifecycle** | `start_task`, `reject_task`, `withdraw_task` |
 | **User** | `get_my_profile`, `get_my_permissions`, `list_users` |
-| **Statistics** | `get_cycle_stats`, `get_daily_stats` |
+| **Statistics** | `get_cycle_stats`, `get_daily_stats`, `get_team_cycle_stats` |
 | **Server health** | `health_check` |
 
 Key behaviours:

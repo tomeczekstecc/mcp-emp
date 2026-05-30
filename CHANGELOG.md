@@ -113,6 +113,40 @@ statistics, user profile, and MCP API-key auth for the HTTP transport.
 
 ## [Unreleased]
 
-Nothing yet.
+---
+
+## [0.2.0] — 2026-05-30
+
+### Added
+
+#### New tools (5)
+
+| Tool | Description |
+|---|---|
+| `edit_task` | Update subject, deadline, notes, url, SOD, tags on any non-terminal task. Dry-run supported. |
+| `start_task` | Transition planned (`PRZYDZIELONE`) tasks to in-progress (`REALIZOWANE`). |
+| `reject_task` | Manager: reject `REALIZOWANE` → `OCZEKUJĄCE` with optional reason. Dry-run supported. |
+| `withdraw_task` | Withdraw `OCZEKUJĄCE` → `W_EDYCJI` to re-edit and resubmit. Dry-run supported. |
+| `list_team_tasks` | Kierownik view: list team tasks with scope/status/search filters. |
+| `get_team_cycle_stats` | Richer cycle stats with per-employee breakdown (kierownik scope). |
+
+#### Status enum
+
+Added two previously undocumented EMP statuses:
+- `PRZYDZIELONE` — planned task, assigned but not yet started.
+- `OCZEKUJĄCE` — waiting queue after manager rejection.
+
+All 8 statuses now covered: `W_EDYCJI` · `PRZYDZIELONE` · `REALIZOWANE` · `OCZEKUJĄCE` · `DO_OCENY` · `ZAKOŃCZONE` · `ODRZUCONE` · `WYCOFANE`.
+
+New English aliases: `planned`, `waiting`.
+
+#### Permissions matrix
+
+- `can_edit` corrected: `true` for all non-terminal statuses (was: `W_EDYCJI` only).
+- `can_start` corrected: `true` only for `PRZYDZIELONE` (was: `W_EDYCJI`).
+
+### Total: 19 tools
+
+---
 
 [0.1.0]: https://github.com/tomeczekstecc/mcp-emp/releases/tag/v0.1.0

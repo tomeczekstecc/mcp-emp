@@ -12,7 +12,10 @@ from mcp_emp.domains.rejestr.client import (
     edit_my_task,
     fetch_my_tasks,
     fetch_task,
+    fetch_team_tasks,
+    reject_my_task,
     start_my_task,
+    withdraw_my_task,
 )
 from mcp_emp.domains.rejestr.contract import Task
 from mcp_emp.domains.rejestr.delete_result import TaskDeletePreview, TaskDeleteResult
@@ -508,3 +511,111 @@ def register(server: FastMCP) -> None:
                 task_id=task_id, current=task.status, attempted="realizuj"
             )
         return await start_my_task(task_id)
+
+    @server.tool()
+    @mutating
+    async def reject_task(
+        task_id: int,
+        reason: str = "",
+        dry_run: bool = False,
+    ) -> Task:
+        """Reject a REALIZOWANE task back to OCZEKUJĄCE (waiting queue).
+
+        Manager operation. Clears the assigned user so the task returns
+        to the team queue. Optionally provide a rejection reason.
+
+        Args:
+            task_id: ID of the task to reject.
+            reason:  Rejection reason (uzasadnienie_odrzucenia). Optional.
+            dry_run: Preview without calling EMP.
+
+        Returns:
+            Updated Task in OCZEKUJĄCE status.
+        """
+        from mcp_emp.core.errors import InvalidTransition  # noqa: PLC0415
+        from mcp_emp.domains.rejestr.status import Status  # noqa: PLC0415
+
+        task = await fetch_task(task_id)
+        if task.status != Status.REALIZOWANE:
+            raise InvalidTransition(
+                task_id=task_id, current=task.status, attempted="odrzuc"
+            )
+        if dry_run:
+            return task
+        return await reject_my_task(task_id, reason or None)
+
+    @server.tool()
+    @mutating
+    async def withdraw_task(
+        task_id: int,
+        dry_run: bool = False,
+    ) -> Task:
+        """Withdraw an OCZEKUJĄCE task back to W_EDYCJI (draft).
+
+        Used after a task has been rejected by a manager (put in OCZEKUJĄCE)
+        and the employee wants to re-edit and resubmit it.
+
+        Args:
+            task_id: ID of the task to withdraw.
+            dry_run: Preview without calling EMP.
+
+        Returns:
+            Updated Task in W_EDYCJI status.
+        """
+        from mcp_emp.core.errors import InvalidTransition  # noqa: PLC0415
+        from mcp_emp.domains.rejestr.status import Status  # noqa: PLC0415
+
+        task = await fetch_task(task_id)
+        if task.status != Status.OCZEKUJACE:
+            raise InvalidTransition(
+                task_id=task_id, current=task.status, attempted="wycofaj"
+            )
+        if dry_run:
+            return task
+        return await withdraw_my_task(task_id)
+
+    @server.tool()
+    @readable
+    async def list_team_tasks(
+        scope: str = "active",
+        status: str = "",
+        search: str = "",
+        assigned_to_id: int | None = None,
+        limit: int = 50,
+    ) -> list[Task]:
+        """List tasks visible to me as kierownik (team manager view).
+
+        Requires kierownik_podglad permission. Returns an empty list if
+        the current user lacks the required role.
+
+        Args:
+            scope:          "active" — currently open tasks (default).
+                            "all"    — full team history.
+            status:         Filter by status (Polish or English alias).
+            search:         Substring filter on task subject.
+            assigned_to_id: Filter by assigned user ID.
+            limit:          Max results (default 50, max 500).
+
+        Returns:
+            List of Task objects newest first.
+        """
+        try:
+            emp_scope = "" if scope == "active" else "moje-wszystkie"
+            tasks = await fetch_team_tasks(scope=emp_scope)
+        except Exception:  # noqa: BLE001
+            return []
+
+        if status:
+            resolved = resolve_status(status)
+            filter_status = resolved.value if resolved else status
+            tasks = [t for t in tasks if t.status == filter_status]
+
+        if search:
+            q = search.casefold()
+            tasks = [t for t in tasks if t.subject and q in t.subject.casefold()]
+
+        if assigned_to_id is not None:
+            tasks = [t for t in tasks if t.assigned_to is not None]
+
+        tasks = sorted(tasks, key=lambda t: t.ordered_at or t.id, reverse=True)
+        return tasks[:min(limit, 500)]

@@ -246,3 +246,61 @@ async def delete_my_task(task_id: int) -> None:
         f"EMP rejected delete: {r.status_code}",
         {"task_id": task_id, "status_code": r.status_code},
     )
+
+
+async def reject_my_task(task_id: int, reason: str | None = None) -> Task:
+    """PUT /rejestr/odrzuc — reject a REALIZOWANE task back to OCZEKUJĄCE.
+
+    Clears assigned_user_id so the task sits in queue.
+    Returns the updated task.
+    """
+    body: dict[str, object] = {"id": task_id}
+    if reason:
+        body["uzasadnienie_odrzucenia"] = reason
+    r = await get_client().put("/rejestr/odrzuc", json=body, headers=await _bearer())
+    if r.status_code == 404:
+        raise TaskNotFound(task_id)
+    if r.status_code != 200:
+        try:
+            msg = r.json().get("message", r.text[:200])
+        except Exception:  # noqa: BLE001
+            msg = r.text[:200]
+        raise EmpRejected(
+            f"EMP rejected odrzuc: {msg}",
+            {"task_id": task_id, "status_code": r.status_code, "message": msg},
+        )
+    return await fetch_task(task_id)
+
+
+async def withdraw_my_task(task_id: int) -> Task:
+    """PUT /rejestr/wycofaj — withdraw OCZEKUJĄCE task back to W_EDYCJI.
+
+    Returns the updated task.
+    """
+    r = await get_client().put(
+        "/rejestr/wycofaj", json={"id": task_id}, headers=await _bearer()
+    )
+    if r.status_code == 404:
+        raise TaskNotFound(task_id)
+    if r.status_code != 200:
+        raise EmpRejected(
+            f"EMP rejected wycofaj: {r.status_code}",
+            {"task_id": task_id, "status_code": r.status_code},
+        )
+    return await fetch_task(task_id)
+
+
+async def fetch_team_tasks(scope: str = "") -> list[Task]:
+    """Fetch team tasks visible to kierownik.
+
+    scope: "" (active only) | "moje-wszystkie" (full history)
+    """
+    path = f"/rejestr/kierownik/lista/{scope}" if scope else "/rejestr/kierownik/lista"
+    r = await get_client().get(path, headers=await _bearer())
+    if r.status_code != 200:
+        raise EmpRejected(
+            f"EMP {r.status_code} on {path}",
+            {"status_code": r.status_code, "body": r.text[:200]},
+        )
+    payload = RejestrListPayload.model_validate(r.json())
+    return [map_task_from_list(p) for p in payload.list]
