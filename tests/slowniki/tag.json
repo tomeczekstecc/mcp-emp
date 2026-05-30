@@ -1,0 +1,40 @@
+{
+  "list": [
+    {
+      "id": 5,
+      "nazwa": "AI"
+    },
+    {
+      "id": 8,
+      "nazwa": "eDrogi"
+    },
+    {
+      "id": 1,
+      "nazwa": "eMP"
+    },
+    {
+      "id": 7,
+      "nazwa": "ePW"
+    },
+    {
+      "id": 6,
+      "nazwa": "GrantyFE"
+    },
+    {
+      "id": 2,
+      "nazwa": "LSI2014"
+    },
+    {
+      "id": 3,
+      "nazwa": "LSI2021"
+    },
+    {
+      "id": 4,
+      "nazwa": "Sharepoint"
+    },
+    {
+      "id": 48,
+      "nazwa": "Udemy"
+    }
+  ]
+}

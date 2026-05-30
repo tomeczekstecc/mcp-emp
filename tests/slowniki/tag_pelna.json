@@ -1,0 +1,103 @@
+{
+  "list": [
+    {
+      "id": 5,
+      "created_user_id": 3,
+      "updated_user_id": 3,
+      "deleted_user_id": null,
+      "nazwa": "AI",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-06-05 12:33:19",
+      "updated_at": "2025-06-05 12:33:19",
+      "deleted_at": null
+    },
+    {
+      "id": 8,
+      "created_user_id": 1,
+      "updated_user_id": 1,
+      "deleted_user_id": null,
+      "nazwa": "eDrogi",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-06-05 12:39:23",
+      "updated_at": "2025-06-05 12:39:23",
+      "deleted_at": null
+    },
+    {
+      "id": 1,
+      "created_user_id": 291,
+      "updated_user_id": 291,
+      "deleted_user_id": null,
+      "nazwa": "eMP",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-06-03 11:27:17",
+      "updated_at": "2025-06-03 11:27:17",
+      "deleted_at": null
+    },
+    {
+      "id": 7,
+      "created_user_id": 1,
+      "updated_user_id": 1,
+      "deleted_user_id": null,
+      "nazwa": "ePW",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-06-05 12:39:08",
+      "updated_at": "2025-06-05 12:39:08",
+      "deleted_at": null
+    },
+    {
+      "id": 6,
+      "created_user_id": 1,
+      "updated_user_id": 1,
+      "deleted_user_id": null,
+      "nazwa": "GrantyFE",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-06-05 12:38:54",
+      "updated_at": "2025-06-05 12:38:54",
+      "deleted_at": null
+    },
+    {
+      "id": 2,
+      "created_user_id": 1,
+      "updated_user_id": 1,
+      "deleted_user_id": null,
+      "nazwa": "LSI2014",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-06-03 12:22:49",
+      "updated_at": "2025-06-03 12:22:49",
+      "deleted_at": null
+    },
+    {
+      "id": 3,
+      "created_user_id": 1,
+      "updated_user_id": 1,
+      "deleted_user_id": null,
+      "nazwa": "LSI2021",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-06-03 12:23:10",
+      "updated_at": "2025-06-03 12:23:10",
+      "deleted_at": null
+    },
+    {
+      "id": 4,
+      "created_user_id": 84,
+      "updated_user_id": 84,
+      "deleted_user_id": null,
+      "nazwa": "Sharepoint",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-06-05 12:28:32",
+      "updated_at": "2025-06-05 12:28:32",
+      "deleted_at": null
+    },
+    {
+      "id": 48,
+      "created_user_id": 1,
+      "updated_user_id": 1,
+      "deleted_user_id": null,
+      "nazwa": "Udemy",
+      "slownik_team_id": "CI-PRS",
+      "created_at": "2025-12-18 11:32:48",
+      "updated_at": "2025-12-18 11:32:48",
+      "deleted_at": null
+    }
+  ]
+}

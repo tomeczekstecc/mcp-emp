@@ -44,7 +44,9 @@ async def lifespan(server: FastMCP) -> AsyncIterator[None]:
     _set_auth(auth)
 
     # ── Identity ─────────────────────────────────────────────────────────────
-    identity = parse_identity(token, settings.kc_realm)
+    identity = parse_identity(token, settings.kc_realm,
+                               fallback_unit=settings.kc_unit,
+                               fallback_team=settings.kc_team)
     _set_identity(identity)
     logger.info("Authenticated as %s roles=%s", identity.username, identity.roles)
 
@@ -99,8 +101,13 @@ def build_server() -> FastMCP:
         """
         return await check_health()
 
-    # M2: slowniki.tools.register(server)
-    # M3: rejestr read tools
+    from mcp_emp.domains.slowniki import tools as slowniki_tools  # noqa: PLC0415
+    slowniki_tools.register(server)
+
+    from mcp_emp.domains.rejestr import tools as rejestr_tools  # noqa: PLC0415
+    rejestr_tools.register(server)
+
+    # M4: add_my_task
     # M4-M6: rejestr write tools
 
     return server

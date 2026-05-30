@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     kc_client_secret: SecretStr = SecretStr("")
     kc_username: str = ""
     kc_password: SecretStr = SecretStr("")
+    kc_unit: str = ""   # fallback when KC token lacks unit claim
+    kc_team: str = ""   # fallback when KC token lacks team claim
 
     # Runtime
     transport: str = "stdio"  # "stdio" | "http"

@@ -15,6 +15,8 @@ class UserInfo(BaseModel):
     username: str
     display_name: str
     roles: list[str]
+    unit: str
+    team: str
 
 
 class HealthStatus(BaseModel):
@@ -64,5 +66,7 @@ async def check_health() -> HealthStatus:
             username=identity.username,
             display_name=identity.display_name,
             roles=identity.roles,
+            unit=identity.unit,
+            team=identity.team,
         ),
     )

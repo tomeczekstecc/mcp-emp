@@ -10,7 +10,7 @@ import asyncio
 import hashlib
 import json
 import secrets
-import time
+import time as _time
 
 _store: dict[str, _TokenEntry] = {}
 _lock = asyncio.Lock()
@@ -23,7 +23,7 @@ class _TokenEntry:
         self.op = op
         self.resource_id = resource_id
         self.payload_hash = payload_hash
-        self.expires_at = time.monotonic() + TOKEN_TTL
+        self.expires_at = _time.time() + TOKEN_TTL
         self.used = False
 
 
@@ -59,7 +59,7 @@ async def consume(
             raise ConfirmationInvalid("Token not found.", {"reason": "unknown"})
         if entry.used:
             raise ConfirmationInvalid("Token already used.", {"reason": "used"})
-        if time.monotonic() > entry.expires_at:
+        if _time.time() > entry.expires_at:
             del _store[token]
             raise ConfirmationInvalid("Token expired.", {"reason": "expired"})
         if entry.op != op or entry.resource_id != resource_id:

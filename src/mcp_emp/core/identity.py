@@ -1,6 +1,8 @@
 """Identity — current user and roles derived from the Keycloak token.
 
 Parsed once after login and cached for the process lifetime.
+`unit` and `team` fall back to MCP_EMP_KC_UNIT / MCP_EMP_KC_TEAM when the
+JWT access token does not carry those claims (KC mapper not configured).
 """
 
 from __future__ import annotations
@@ -19,6 +21,8 @@ class Identity:
     display_name: str
     email: str
     roles: list[str] = field(default_factory=list)
+    unit: str = ""   # e.g. "CI"
+    team: str = ""   # e.g. "CI-PRS"
 
     def has_role(self, role: str) -> bool:
         """Return True when the user holds *role*."""
@@ -28,11 +32,17 @@ class Identity:
 _identity: Identity | None = None
 
 
-def parse_identity(access_token: str, realm_name: str) -> Identity:
-    """Decode *access_token* without verification and extract identity claims.
+def parse_identity(
+    access_token: str,
+    realm_name: str,
+    *,
+    fallback_unit: str = "",
+    fallback_team: str = "",
+) -> Identity:
+    """Decode *access_token* and extract identity claims.
 
-    KC tokens are signed; for local dev we skip verification.  In production,
-    pass the KC public key here.
+    `fallback_unit` / `fallback_team` are used when the token does not carry
+    those claims (KC mapper not configured on the API client).
     """
     claims = pyjwt.decode(
         access_token,
@@ -40,7 +50,6 @@ def parse_identity(access_token: str, realm_name: str) -> Identity:
         algorithms=["RS256"],
     )
     resource_access: dict[str, dict[str, list[str]]] = claims.get("resource_access", {})
-    # Prefer roles from the specific client resource, fall back to realm roles
     roles: list[str] = (
         resource_access.get(realm_name, {}).get("roles", [])
         or resource_access.get("eMP", {}).get("roles", [])
@@ -52,6 +61,8 @@ def parse_identity(access_token: str, realm_name: str) -> Identity:
         display_name=claims.get("name", ""),
         email=claims.get("email", ""),
         roles=roles,
+        unit=claims.get("unit", "") or fallback_unit,
+        team=claims.get("team", "") or fallback_team,
     )
 
 
