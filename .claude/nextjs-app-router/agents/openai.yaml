@@ -1,0 +1,4 @@
+interface:
+  display_name: "Next.js App Router"
+  short_description: "Modern route and rendering guidance"
+  default_prompt: "Use $web-nextjs-app-router to build or refactor an App Router feature in apps/web with clean server and client boundaries."

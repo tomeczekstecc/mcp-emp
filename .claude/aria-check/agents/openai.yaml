@@ -1,0 +1,4 @@
+interface:
+  display_name: "ARIA Check"
+  short_description: "Semantic and screen-reader review"
+  default_prompt: "Use $aria-check to inspect the relevant UI for semantic HTML, ARIA correctness, screen-reader naming, focus flow, and state announcements."

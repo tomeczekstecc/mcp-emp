@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web Accessibility"
+  short_description: "Inclusive interaction and semantics"
+  default_prompt: "Use $web-accessibility to improve semantics, keyboard flow, focus behavior, and accessible UI patterns in apps/web."

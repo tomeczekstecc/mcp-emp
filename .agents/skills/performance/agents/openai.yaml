@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web Performance"
+  short_description: "Practical frontend performance guidance"
+  default_prompt: "Use $web-performance to improve rendering, client boundaries, caching behavior, and perceived speed in apps/web."

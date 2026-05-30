@@ -1,0 +1,4 @@
+interface:
+  display_name: "Context TODO"
+  short_description: "Append structured TODO items to context/TODO.md."
+  default_prompt: "Add a TODO item to context/TODO.md with content, priority, branch, date, and related domain."

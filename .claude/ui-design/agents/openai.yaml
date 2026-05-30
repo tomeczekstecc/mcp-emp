@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web UI Design"
+  short_description: "Intentional frontend visual design"
+  default_prompt: "Use $web-ui-design to improve the visual hierarchy and interface quality of a page or feature in apps/web."

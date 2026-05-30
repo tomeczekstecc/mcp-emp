@@ -1,0 +1,35 @@
+{
+  "eval_id": 2,
+  "eval_name": "update-stale",
+  "configuration": "without_skill",
+  "assertions": [
+    {
+      "text": "Existing API integration pattern documentation is preserved",
+      "passed": true,
+      "evidence": "Entire original README content preserved verbatim after --- separator; contains CQRS, apiRequest, domain folder, all code examples intact"
+    },
+    {
+      "text": "Getting Started section is added with actual commands",
+      "passed": true,
+      "evidence": "'## Getting started' with 3-step numbered flow including pnpm install and pnpm dev"
+    },
+    {
+      "text": "Environment Variables section is added",
+      "passed": true,
+      "evidence": "'## Configure environment variables' step includes full table with API_URL, DATABASE_URL and all vars"
+    },
+    {
+      "text": "Onboarding sections appear before architectural documentation",
+      "passed": true,
+      "evidence": "New onboarding sections prepended before original content, separated by '---'"
+    },
+    {
+      "text": "Available scripts section is added referencing pnpm dev, pnpm build, pnpm lint",
+      "passed": true,
+      "evidence": "'## Available scripts' table with pnpm dev, pnpm build, pnpm start, pnpm lint added"
+    }
+  ],
+  "pass_count": 5,
+  "total_count": 5,
+  "pass_rate": 1.0
+}

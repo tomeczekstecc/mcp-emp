@@ -1,0 +1,4 @@
+interface:
+  display_name: "Context7 First"
+  short_description: "Resolve docs before coding"
+  default_prompt: "Use $context7-first before coding against a library with version-sensitive APIs or unfamiliar behavior."

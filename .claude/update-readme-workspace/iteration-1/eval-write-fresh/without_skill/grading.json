@@ -1,0 +1,50 @@
+{
+  "eval_id": 1,
+  "eval_name": "write-fresh",
+  "configuration": "without_skill",
+  "assertions": [
+    {
+      "text": "README has a top-level project name heading",
+      "passed": true,
+      "evidence": "Output starts with '# CI-PRS Web'"
+    },
+    {
+      "text": "README has a Prerequisites section",
+      "passed": true,
+      "evidence": "'## Prerequisites' section present with Node.js 20+, pnpm 9+, backend API, PostgreSQL"
+    },
+    {
+      "text": "README has a Getting Started section with runnable commands",
+      "passed": true,
+      "evidence": "'## Getting Started' with numbered steps and bash code blocks for each step"
+    },
+    {
+      "text": "Commands reference pnpm (the actual package manager) not npm or yarn",
+      "passed": true,
+      "evidence": "Contains 'pnpm install' and 'pnpm dev'"
+    },
+    {
+      "text": "README has an Environment Variables section with actual vars from .env.example",
+      "passed": true,
+      "evidence": "'## Environment Variables' table with all 14 vars including API_URL and DATABASE_URL, with Required/Situational/If SSO markers"
+    },
+    {
+      "text": "README documents available scripts from package.json",
+      "passed": true,
+      "evidence": "'### Scripts' table under Development section lists pnpm dev, pnpm build, pnpm start, pnpm lint"
+    },
+    {
+      "text": "README mentions the actual tech stack (Next.js, React, Tailwind)",
+      "passed": true,
+      "evidence": "'## Tech Stack' table lists Next.js 16, TypeScript 5, React 19, Tailwind CSS v4, shadcn/ui"
+    },
+    {
+      "text": "README does not include real secret values",
+      "passed": true,
+      "evidence": "No actual secret values present in output"
+    }
+  ],
+  "pass_count": 8,
+  "total_count": 8,
+  "pass_rate": 1.0
+}

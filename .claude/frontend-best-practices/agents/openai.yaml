@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend Best Practices"
+  short_description: "Practical React and Next.js guidance"
+  default_prompt: "Use $web-frontend-best-practices to design or refactor frontend code in apps/web with cleaner component boundaries and state flow."

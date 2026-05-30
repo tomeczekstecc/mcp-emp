@@ -1,0 +1,35 @@
+{
+  "eval_id": 3,
+  "eval_name": "contributing-scoped",
+  "configuration": "without_skill",
+  "assertions": [
+    {
+      "text": "Output has a Contributing section heading",
+      "passed": true,
+      "evidence": "Starts with '## Contributing' heading"
+    },
+    {
+      "text": "Output mentions Conventional Commits explicitly",
+      "passed": true,
+      "evidence": "'This project follows [Conventional Commits]'"
+    },
+    {
+      "text": "Output includes concrete commit message prefix examples",
+      "passed": true,
+      "evidence": "Shows feat(auth):, fix(api):, chore(deps): examples with scope syntax"
+    },
+    {
+      "text": "Output mentions the PR review requirement",
+      "passed": true,
+      "evidence": "'At least one review approval is required before merging'"
+    },
+    {
+      "text": "Output is concise — not a generic wall of text",
+      "passed": true,
+      "evidence": "~240 words, no generic opener, organized into subsections"
+    }
+  ],
+  "pass_count": 5,
+  "total_count": 5,
+  "pass_rate": 1.0
+}

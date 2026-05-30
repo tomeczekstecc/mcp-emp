@@ -1,0 +1,4 @@
+interface:
+  display_name: "Security Check"
+  short_description: "Frontend security and exposure scan"
+  default_prompt: "Use $security-check to review the relevant frontend code for injection, secret exposure, unsafe storage, auth handling, and trust-boundary risks."

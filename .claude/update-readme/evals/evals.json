@@ -1,0 +1,23 @@
+{
+  "skill_name": "update-readme",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a README for this project. It needs proper onboarding sections — right now it's missing everything a new developer needs to get started.",
+      "expected_output": "A complete README.md with all standard sections: project name/one-liner, prerequisites, getting started commands, environment variables table, available scripts table, project structure, architecture overview, and tech stack. Commands must be copy-paste runnable and sourced from actual package.json scripts and .env.example.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Our README only documents the API pattern but a new dev can't figure out how to run this locally. Fix it — add proper developer onboarding sections but keep the existing API documentation.",
+      "expected_output": "An updated README.md that preserves the existing API integration pattern documentation and adds the missing onboarding sections at the top: prerequisites, getting started, environment variables, and scripts. The existing architecture content should remain intact.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "What should the contributing section of our README say? We use conventional commits and PRs need at least one review before merge.",
+      "expected_output": "A Contributing section (markdown) covering: branch naming convention, commit message format referencing Conventional Commits with examples, PR process including the one-review requirement, and any testing expectations. Should be concise and actionable, not generic.",
+      "files": []
+    }
+  ]
+}

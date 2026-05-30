@@ -1,0 +1,32 @@
+{
+  "eval_id": 3,
+  "eval_name": "contributing-scoped",
+  "prompt": "What should the contributing section of our README say? We use conventional commits and PRs need at least one review before merge.",
+  "assertions": [
+    {
+      "id": "has-contributing-heading",
+      "description": "Output has a Contributing section heading",
+      "check": "Output contains a markdown heading with 'Contributing'"
+    },
+    {
+      "id": "mentions-conventional-commits",
+      "description": "Output mentions Conventional Commits explicitly",
+      "check": "Output references 'Conventional Commits' or 'conventional commit' format"
+    },
+    {
+      "id": "has-commit-examples",
+      "description": "Output includes concrete commit message prefix examples",
+      "check": "Output shows commit type examples like feat:, fix:, chore:, docs: etc."
+    },
+    {
+      "id": "mentions-pr-review",
+      "description": "Output mentions the PR review requirement",
+      "check": "Output references at least one review or approval required before merge"
+    },
+    {
+      "id": "is-concise",
+      "description": "Output is concise — not a generic wall of text",
+      "check": "Output is under 400 words and avoids generic boilerplate like 'thank you for contributing to our project'"
+    }
+  ]
+}

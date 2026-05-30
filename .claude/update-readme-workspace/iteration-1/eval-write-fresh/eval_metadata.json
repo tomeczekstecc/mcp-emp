@@ -1,0 +1,47 @@
+{
+  "eval_id": 1,
+  "eval_name": "write-fresh",
+  "prompt": "Write a README for this project. It needs proper onboarding sections — right now it's missing everything a new developer needs to get started.",
+  "assertions": [
+    {
+      "id": "has-project-name",
+      "description": "README has a top-level project name heading",
+      "check": "Output contains an H1 heading (# )"
+    },
+    {
+      "id": "has-prerequisites",
+      "description": "README has a Prerequisites section",
+      "check": "Output contains a 'Prerequisites' section heading"
+    },
+    {
+      "id": "has-getting-started",
+      "description": "README has a Getting Started section with runnable commands",
+      "check": "Output contains 'Getting Started' and a code block with shell commands"
+    },
+    {
+      "id": "has-pnpm-commands",
+      "description": "Commands reference pnpm (the actual package manager) not npm or yarn",
+      "check": "Output contains 'pnpm install' and 'pnpm dev'"
+    },
+    {
+      "id": "has-env-vars",
+      "description": "README has an Environment Variables section with actual vars from .env.example",
+      "check": "Output contains 'Environment' and references at least API_URL and DATABASE_URL"
+    },
+    {
+      "id": "has-scripts-table",
+      "description": "README documents available scripts from package.json",
+      "check": "Output contains 'Scripts' and references pnpm dev, pnpm build, pnpm lint"
+    },
+    {
+      "id": "has-tech-stack",
+      "description": "README mentions the actual tech stack (Next.js, React, Tailwind)",
+      "check": "Output references Next.js and React and Tailwind (or shadcn)"
+    },
+    {
+      "id": "no-secret-values",
+      "description": "README does not include real secret values",
+      "check": "Output does not contain the actual BETTER_AUTH_SECRET value from .env"
+    }
+  ]
+}

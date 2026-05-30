@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "update-readme", "runs": [{"id": "eval-write-fresh-with_skill", "prompt": "Write a README for this project. It needs proper onboarding sections \u00e2\u20ac\u201d right now it's missing everything a new developer needs to get started.", "eval_id": 1, "outputs": [{"name": "README.md", "type": "text", "content": "# CI-PRS Web\n\nA Next.js web frontend for managing CI pull requests, built with a server-first API layer and domain-driven structure.\n\n## Prerequisites\n\n- Node.js 20+\n- pnpm (recommended over npm/yarn)\n- PostgreSQL database\n- Backend API service running (defaults to `http://127.0.0.1:8000`)\n- Optional: Keycloak instance if SSO is enabled\n\n## Getting Started\n\n```bash\ngit clone <repo-url>\ncd web\ncp .env.example .env   # fill in required values \u00e2\u20ac\u201d see Environment Variables below\npnpm install\npnpm dev\n```\n\nThe dev server starts at `http://localhost:3600`.\n\n## Environment Variables\n\nCopy `.env.example` to `.env` and fill in the required values. Never commit real secrets.\n\n| Variable | Required | Description |\n|----------|----------|-------------|\n| `API_URL` | Yes | Base URL for the backend API (e.g. `http://127.0.0.1:8000`) |\n| `BETTER_AUTH_SECRET` | Yes | Secret key used by better-auth to sign sessions |\n| `BETTER_AUTH_URL` | Yes | Public URL of this Next.js app, used by better-auth for callbacks |\n| `DATABASE_URL` | Yes | PostgreSQL connection string |\n| `LARAVEL_INTERNAL_AUTH_TOKEN` | Yes | Internal token for Laravel API auth |\n| `LARAVEL_INTERNAL_AUTH_MAIL_TOKEN` | Yes | Internal token for Laravel mail flows |\n| `LARAVEL_INTERNAL_AUTH_REVOKE_TOKEN` | Yes | Internal token for Laravel revoke flows |\n| `AUTH_SIGNUP_ENABLED` | No | Enable/disable self-service sign-up (`true` or `false`, default `true`) |\n| `AUTH_SSO_ENABLED` | No | Enable/disable SSO login (`true` or `false`, default `false`) |\n| `AUTH_SUPPORT_LABEL` | No | Display label for the support link shown on auth pages |\n| `AUTH_SUPPORT_URL` | No | URL for the support link shown on auth pages |\n| `KEYCLOAK_CLIENT_ID` | SSO only | Keycloak OAuth client ID |\n| `KEYCLOAK_CLIENT_SECRET` | SSO only | Keycloak OAuth client secret |\n| `KEYCLOAK_ISSUER` | SSO only | Keycloak issuer URL (e.g. `https://keycloak.example.com/realms/myrealm`) |\n\n## Available Scripts\n\n| Script | Description |\n|--------|-------------|\n| `pnpm dev` | Start the Next.js development server with hot reload |\n| `pnpm build` | Compile a production build with type-checking |\n| `pnpm start` | Serve the production build locally |\n| `pnpm lint` | Run ESLint across the entire project |\n\n## Project Structure\n\n```\nsrc/\n  app/            Next.js App Router pages and layouts\n  components/     Shared and domain UI components\n  hooks/          Custom React hooks\n  lib/\n    api/\n      core/       Shared fetch wrapper and API config\n      contracts/  Common request/response types\n      domains/    One folder per backend domain (contract, mapper, queries, commands)\ncontext/          Project documentation for AI and human contributors\nspecs/            Spec Kit feature specs and implementation plans\n```\n\n## Architecture Overview\n\n**Server components by default.** Add `'use client'` only at interactive leaves or for browser-only APIs.\n\n**Server-first API layer.** All backend calls go through `src/lib/api/`. Pages import domain query functions and receive mapped frontend models \u00e2\u20ac\u201d they never call `fetch` directly or consume raw backend DTOs.\n\n**CQRS in API domains.** Each domain under `src/lib/api/domains/<domain>/` keeps reads in `queries.ts` and writes in `commands.ts`. Both call the shared `apiRequest()` helper in `src/lib/api/core/http.ts`. Only the domain mapper (`mapper.ts`) translates backend snake_case field names into frontend camelCase models.\n\n**TanStack Query for dynamic CRUD.** For screens with tables, filters, pagination, optimistic updates, or background sync, add `client.ts`, `query-keys.ts`, and `query-options.ts` to the domain folder.\n\n## Tech Stack\n\n| Layer | Technology | Version |\n|-------|-----------|---------|\n| Framework | Next.js (App Router) | 16.2.2 |\n| Runtime | React | 19.x |\n| Styling | Tailwind CSS | 4.x |\n| UI components | shadcn/ui (`base-nova` style) | 4.x |\n| Auth | better-auth | 1.x |\n| Database client | pg (PostgreSQL) | 8.x |\n| Tables | TanStack React Table | 8.x |\n| Charts | Recharts | 3.x |\n| Drag and drop | dnd-kit | 6.x |\n| Validation | Zod | 4.x |\n| Language | TypeScript | 5.x |\n\n## Contributing\n\n**Branches.** Use feature branches off `master`. Follow `<type>/<short-description>` (e.g. `feat/add-auth-sso`).\n\n**Commits.** Use Conventional Commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `style:`, `perf:`.\n\n**PRs.** Open against `master`. Run `pnpm lint` and `pnpm build` locally before requesting review.\n\n**New API integrations.** Add a domain folder under `src/lib/api/domains/<domain>/` with `contract.ts`, `mapper.ts`, `queries.ts`, and `commands.ts`. Do not wire `fetch` directly in pages.\n\nSee `context/coding-standards.md` and `context/ai-interaction.md` for more detail.\n\n## Deployment\n\nCI deploys to production automatically on merge to `master`.\n\n---\n\n## Further Reading\n\n- `context/project-overview.md` \u00e2\u20ac\u201d product goals, target users, and UX direction\n- `context/project-spec.md` \u00e2\u20ac\u201d feature scope, data model, and roadmap\n- `context/coding-standards.md` \u00e2\u20ac\u201d TypeScript, React, Next.js, and Tailwind conventions\n- `context/ai-interaction.md` \u00e2\u20ac\u201d collaboration, testing, and commit expectations\n- `specs/001-app-auth/plan.md` \u00e2\u20ac\u201d current active implementation plan\n"}], "grading": {"eval_id": 1, "eval_name": "write-fresh", "configuration": "with_skill", "assertions": [{"text": "README has a top-level project name heading", "passed": true, "evidence": "Output starts with '# CI-PRS Web'"}, {"text": "README has a Prerequisites section", "passed": true, "evidence": "'## Prerequisites' section present with Node.js, pnpm, PostgreSQL, backend API"}, {"text": "README has a Getting Started section with runnable commands", "passed": true, "evidence": "'## Getting Started' with bash code block containing git clone, cp .env.example, pnpm install, pnpm dev"}, {"text": "Commands reference pnpm (the actual package manager) not npm or yarn", "passed": true, "evidence": "Contains 'pnpm install' and 'pnpm dev' exactly"}, {"text": "README has an Environment Variables section with actual vars from .env.example", "passed": true, "evidence": "'## Environment Variables' table includes API_URL, DATABASE_URL, and all 14 vars from .env.example with Required column"}, {"text": "README documents available scripts from package.json", "passed": true, "evidence": "'## Available Scripts' table has pnpm dev, pnpm build, pnpm start, pnpm lint with descriptions"}, {"text": "README mentions the actual tech stack (Next.js, React, Tailwind)", "passed": true, "evidence": "'## Tech Stack' table lists Next.js 16.2.2, React 19, Tailwind CSS 4.x, shadcn/ui"}, {"text": "README does not include real secret values", "passed": true, "evidence": "No actual BETTER_AUTH_SECRET value present; env table shows descriptions only"}], "pass_count": 8, "total_count": 8, "pass_rate": 1.0}}, {"id": "eval-write-fresh-without_skill", "prompt": "Write a README for this project. It needs proper onboarding sections \u00e2\u20ac\u201d right now it's missing everything a new developer needs to get started.", "eval_id": 1, "outputs": [{"name": "README.md", "type": "text", "content": "# CI-PRS Web\n\nA server-first Next.js frontend for the CI-PRS Web Platform. It provides a public-facing landing page and an internal dashboard UI, built to connect to a backend API without requiring rewrites to the page layer.\n\n## Table of Contents\n\n- [Tech Stack](#tech-stack)\n- [Prerequisites](#prerequisites)\n- [Getting Started](#getting-started)\n- [Environment Variables](#environment-variables)\n- [Project Structure](#project-structure)\n- [Development](#development)\n- [API Integration Pattern](#api-integration-pattern)\n\n---\n\n## Tech Stack\n\n| Layer | Technology |\n|---|---|\n| Framework | Next.js 16 (App Router) |\n| Language | TypeScript 5 |\n| UI Library | React 19 |\n| Styling | Tailwind CSS v4 |\n| Components | shadcn/ui (`base-nova` style) |\n| Icons | lucide-react |\n| Theming | next-themes |\n| Tables | TanStack Table v8 |\n| Charts | Recharts |\n| Validation | Zod |\n| Forms | TanStack Form |\n| Auth | better-auth |\n| Database client | pg (PostgreSQL) |\n| Drag and drop | dnd-kit |\n\n---\n\n## Prerequisites\n\n- **Node.js** 20 or later\n- **pnpm** 9 or later (`npm install -g pnpm`)\n- A running backend API (see `API_URL` in [Environment Variables](#environment-variables))\n- A PostgreSQL database (see `DATABASE_URL`)\n\n---\n\n## Getting Started\n\n1. **Clone the repository.**\n\n   ```bash\n   git clone <repo-url>\n   cd ci-prs/web\n   ```\n\n2. **Install dependencies.**\n\n   ```bash\n   pnpm install\n   ```\n\n3. **Set up environment variables.**\n\n   Copy the example file and fill in the required values:\n\n   ```bash\n   cp .env.example .env.local\n   ```\n\n   See the [Environment Variables](#environment-variables) section for a description of each variable.\n\n4. **Start the development server.**\n\n   ```bash\n   pnpm dev\n   ```\n\n   The app is available at [http://localhost:3000](http://localhost:3000).\n\n---\n\n## Environment Variables\n\nCopy `.env.example` to `.env.local` and populate the values before running the app.\n\n| Variable | Required | Description |\n|---|---|---|\n| `API_URL` | Yes | Base URL of the backend API. Defaults to `http://127.0.0.1:8000` for local development. |\n| `BETTER_AUTH_SECRET` | Yes | Secret key used by better-auth to sign sessions. Use a long random string in production. |\n| `BETTER_AUTH_URL` | Yes | Public URL of this Next.js app. Used by better-auth for redirects. |\n| `DATABASE_URL` | Yes | PostgreSQL connection string used by the auth layer. |\n| `LARAVEL_INTERNAL_AUTH_TOKEN` | Yes | Shared secret for internal server-to-server calls to the Laravel backend. |\n| `LARAVEL_INTERNAL_AUTH_MAIL_TOKEN` | Situational | Shared secret for mail-related internal calls. |\n| `LARAVEL_INTERNAL_AUTH_REVOKE_TOKEN` | Situational | Shared secret for token revocation calls. |\n| `AUTH_SIGNUP_ENABLED` | No | Set to `true` to allow new sign-ups. Defaults to `true`. |\n| `AUTH_SSO_ENABLED` | No | Set to `true` to enable SSO via Keycloak. Defaults to `false`. |\n| `AUTH_SUPPORT_LABEL` | No | Label text shown on the auth support link. |\n| `AUTH_SUPPORT_URL` | No | URL for the auth support link. |\n| `KEYCLOAK_CLIENT_ID` | If SSO | Keycloak client ID. Required when `AUTH_SSO_ENABLED=true`. |\n| `KEYCLOAK_CLIENT_SECRET` | If SSO | Keycloak client secret. Required when `AUTH_SSO_ENABLED=true`. |\n| `KEYCLOAK_ISSUER` | If SSO | Keycloak issuer URL. Required when `AUTH_SSO_ENABLED=true`. |\n\n---\n\n## Project Structure\n\n```text\nsrc/\n  app/                      # Next.js App Router routes\n    auth/                   # Authentication routes (sign-in, sign-up, etc.)\n    dashboard/              # Internal dashboard route\n    page.tsx                # Public landing page\n    layout.tsx              # Root layout\n    globals.css             # Global styles and Tailwind CSS v4 theme\n  components/               # Shared React components\n    ui/                     # shadcn/ui primitives\n    auth/                   # Auth-specific UI\n  hooks/                    # Reusable client-side hooks\n  lib/\n    api/\n      core/\n        config.ts           # Reads API_URL and builds backend URLs\n        http.ts             # Shared fetch wrapper and error handling\n      contracts/\n        common.ts           # Shared request/response/error types\n      domains/              # One folder per backend domain\n        <domain>/\n          contract.ts       # Raw backend DTOs + frontend models\n          mapper.ts         # DTO -> frontend model conversion\n          queries.ts        # Read operations (CQRS read side)\n          commands.ts       # Write operations (CQRS write side)\n    auth.ts                 # better-auth server configuration\n    auth-client.ts          # better-auth browser client\n    utils.ts                # General utilities\ncontext/                    # Project documentation for AI and humans\nspecs/                      # Spec Kit feature artifacts\ndocs/                       # Backend integration notes\n```\n\n---\n\n## Development\n\n### Scripts\n\n| Script | Description |\n|---|---|\n| `pnpm dev` | Start the development server with hot reload |\n| `pnpm build` | Build the production bundle |\n| `pnpm start` | Start the production server (run `build` first) |\n| `pnpm lint` | Lint the codebase with ESLint |\n\n### Component Library\n\nThis project uses **shadcn/ui** with the `base-nova` style. To add a new component:\n\n```bash\npnpm dlx shadcn@latest add <component-name>\n```\n\nComponents are installed into `src/components/ui/`.\n\n### Server vs. Client Components\n\n- Components are server components by default. Do not add `'use client'` unless the component uses hooks, browser APIs, or interactive state.\n- When a component needs client behavior, extract only the interactive leaf into a separate `'use client'` file and keep the shell as a server component.\n\n### Adding a New Domain\n\n1. Create a folder under `src/lib/api/domains/<domain>/`.\n2. Add `contract.ts` with the backend DTO types and the frontend model types.\n3. Add `mapper.ts` to convert DTO fields to camelCase frontend fields.\n4. Add `queries.ts` for read operations that call `apiRequest()` from `src/lib/api/core/http.ts`.\n5. Add `commands.ts` for write operations (create, update, delete) that call `apiRequest()`.\n6. Import queries in server components or page files; import commands in server actions or route handlers.\n\nFor domains that need browser-side state management (CRUD tables, pagination, background refresh), also add:\n\n- `client.ts` \u00e2\u20ac\u201d browser-safe fetchers (no server-only imports)\n- `query-keys.ts` \u00e2\u20ac\u201d stable TanStack Query key factories\n- `query-options.ts` \u00e2\u20ac\u201d reusable `queryOptions` / `useQuery` config\n\n---\n\n## API Integration Pattern\n\nThis project uses a server-first API layer so pages and components stay simple even as backend integration grows.\n\n### Request Flow\n\n1. A page imports a domain query from `src/lib/api/domains/<domain>/queries.ts`.\n2. The query calls `apiRequest()` in `src/lib/api/core/http.ts`.\n3. The HTTP layer builds the full URL from `API_URL` and handles fetch, JSON parsing, and errors.\n4. The response is typed as a raw DTO.\n5. The domain mapper converts the DTO into the frontend model.\n6. The page renders the mapped model without knowing any transport details.\n\n### CQRS Rule of Thumb\n\n- `queries.ts` is the read side. Query functions fetch data and return mapped models. They must not cause backend state changes.\n- `commands.ts` is the write side. Command functions create, update, submit, revoke, provision, or delete.\n- Queries must not call commands; commands must not call queries.\n- Only mappers translate raw backend field names into frontend field names.\n- Pages and components must consume mapped frontend models, not raw DTOs.\n"}], "grading": {"eval_id": 1, "eval_name": "write-fresh", "configuration": "without_skill", "assertions": [{"text": "README has a top-level project name heading", "passed": true, "evidence": "Output starts with '# CI-PRS Web'"}, {"text": "README has a Prerequisites section", "passed": true, "evidence": "'## Prerequisites' section present with Node.js 20+, pnpm 9+, backend API, PostgreSQL"}, {"text": "README has a Getting Started section with runnable commands", "passed": true, "evidence": "'## Getting Started' with numbered steps and bash code blocks for each step"}, {"text": "Commands reference pnpm (the actual package manager) not npm or yarn", "passed": true, "evidence": "Contains 'pnpm install' and 'pnpm dev'"}, {"text": "README has an Environment Variables section with actual vars from .env.example", "passed": true, "evidence": "'## Environment Variables' table with all 14 vars including API_URL and DATABASE_URL, with Required/Situational/If SSO markers"}, {"text": "README documents available scripts from package.json", "passed": true, "evidence": "'### Scripts' table under Development section lists pnpm dev, pnpm build, pnpm start, pnpm lint"}, {"text": "README mentions the actual tech stack (Next.js, React, Tailwind)", "passed": true, "evidence": "'## Tech Stack' table lists Next.js 16, TypeScript 5, React 19, Tailwind CSS v4, shadcn/ui"}, {"text": "README does not include real secret values", "passed": true, "evidence": "No actual secret values present in output"}], "pass_count": 8, "total_count": 8, "pass_rate": 1.0}}, {"id": "eval-update-stale-with_skill", "prompt": "Our README only documents the API pattern but a new dev can't figure out how to run this locally. Fix it \u00e2\u20ac\u201d add proper developer onboarding sections but keep the existing API documentation.", "eval_id": 2, "outputs": [{"name": "README.md", "type": "text", "content": "# CI-PRS Web\n\nA Next.js web application for managing CI pull requests, built on a server-first API layer.\n\n## Prerequisites\n\n- Node.js 20+\n- pnpm 9+\n- PostgreSQL database\n- A running backend API (defaults to `http://127.0.0.1:8000`)\n\n## Getting Started\n\n```bash\ngit clone <repo-url>\ncd web\ncp .env.example .env   # fill in required values\npnpm install\npnpm dev\n```\n\nThe app will be available at `http://localhost:3000`.\n\n## Environment Variables\n\nCopy `.env.example` to `.env` and fill in the required values. Never commit real secrets.\n\n| Variable | Required | Description |\n|----------|----------|-------------|\n| `API_URL` | Yes | Base URL for the backend API (e.g. `http://127.0.0.1:8000`) |\n| `BETTER_AUTH_SECRET` | Yes | Secret key used by Better Auth to sign sessions |\n| `BETTER_AUTH_URL` | Yes | Public URL of this app, used by Better Auth (e.g. `http://127.0.0.1:3000`) |\n| `DATABASE_URL` | Yes | PostgreSQL connection string |\n| `LARAVEL_INTERNAL_AUTH_TOKEN` | Yes | Internal token for Laravel backend auth |\n| `LARAVEL_INTERNAL_AUTH_MAIL_TOKEN` | No | Internal token for mail-related backend calls |\n| `LARAVEL_INTERNAL_AUTH_REVOKE_TOKEN` | No | Internal token for revoking backend auth |\n| `AUTH_SIGNUP_ENABLED` | No | Set to `true` to enable self-service sign-up (default: `true`) |\n| `AUTH_SSO_ENABLED` | No | Set to `true` to enable SSO login (default: `false`) |\n| `AUTH_SUPPORT_LABEL` | No | Display label for the support link on auth pages |\n| `AUTH_SUPPORT_URL` | No | URL for the support link on auth pages |\n| `KEYCLOAK_CLIENT_ID` | No | Keycloak client ID (required when SSO is enabled) |\n| `KEYCLOAK_CLIENT_SECRET` | No | Keycloak client secret (required when SSO is enabled) |\n| `KEYCLOAK_ISSUER` | No | Keycloak issuer URL (required when SSO is enabled) |\n\n## Available Scripts\n\n| Script | Description |\n|--------|-------------|\n| `pnpm dev` | Start the development server with hot reload |\n| `pnpm build` | Compile and type-check a production build |\n| `pnpm start` | Serve the production build locally |\n| `pnpm lint` | Run ESLint across the project |\n\n## Project Structure\n\n```\nsrc/\n  app/            Next.js App Router pages, layouts, and route handlers\n  components/     Shared UI components (shadcn/ui + custom)\n  hooks/          Reusable React hooks\n  lib/            Business logic, API clients, and utilities\n    api/          Server-first API layer (see Architecture below)\ncontext/          Project documentation for AI and human contributors\nspecs/            Spec Kit feature artifacts and implementation plans\n```\n\nFor product goals, feature scope, coding standards, and collaboration expectations, see the `context/` folder:\n\n- `context/project-overview.md` \u00e2\u20ac\u201d product goals, users, and UX direction\n- `context/project-spec.md` \u00e2\u20ac\u201d feature scope, data model, and roadmap\n- `context/coding-standards.md` \u00e2\u20ac\u201d TypeScript, React, Next.js, and Tailwind rules\n- `context/ai-interaction.md` \u00e2\u20ac\u201d collaboration, testing, and commit expectations\n\n## Architecture Overview\n\n- **Server components by default.** Add `'use client'` only at interactive leaves or when browser-only APIs are needed.\n- **Auth-facing pages** live under `src/app/auth/`.\n- **Feature placement:** routes under `src/app/<domain>/`, UI under `src/components/<domain>/`, helpers under `src/lib/<domain>/` or `src/lib/api/domains/<domain>/`.\n- **API layer follows CQRS:** reads in `queries.ts`, writes in `commands.ts`. See the full API pattern below.\n\n## Tech Stack\n\n| Technology | Version |\n|------------|---------|\n| Next.js | 16.2.2 |\n| React | 19 |\n| TypeScript | 5.8 |\n| Tailwind CSS | 4.x |\n| shadcn/ui | 4.x (base-nova style) |\n| Better Auth | 1.3 |\n| TanStack Table | 8.x |\n| Zod | 4.x |\n| PostgreSQL (via `pg`) | 8.x |\n\n## API Integration Pattern\n\nThis project uses a server-first API layer in `src/lib/api` so page and component code stay small even when backend integration grows.\n\n### Goals\n\n- Keep transport details out of pages and components.\n- Keep backend DTOs separate from frontend view models.\n- Make each backend area grow inside its own domain folder.\n- Allow the UI to handle backend failures consistently.\n\n### Folder structure\n\n```text\nsrc/lib/api/\n  core/\n    config.ts\n    http.ts\n  contracts/\n    common.ts\n  domains/\n    landing-page/\n      contract.ts\n      mapper.ts\n      queries.ts\n    applications/\n      contract.ts\n      mapper.ts\n      commands.ts\n```\n\n### Responsibilities\n\n- `src/lib/api/core/config.ts`\n  Reads API configuration such as `API_URL` and builds absolute backend URLs.\n- `src/lib/api/core/http.ts`\n  Owns the shared `fetch` wrapper, JSON parsing, and normalized API error handling.\n- `src/lib/api/contracts/common.ts`\n  Defines common request, response, and error types used across domains.\n- `src/lib/api/domains/<domain>/contract.ts`\n  Defines the raw backend payloads and the frontend-friendly models for that domain.\n- `src/lib/api/domains/<domain>/mapper.ts`\n  Maps backend DTO fields like `primary_cta_label` into frontend fields like `primaryCtaLabel`.\n- `src/lib/api/domains/<domain>/queries.ts`\n  Contains read-side operations for that domain and decides how fallback behavior should work.\n- `src/lib/api/domains/<domain>/commands.ts`\n  Contains write-side operations for that domain such as create, update, submit, and delete flows.\n\n### Request flow\n\n1. A page imports a domain query, for example `getLandingPageContent` from `src/lib/api/domains/landing-page/queries.ts`.\n2. The domain query calls the shared `apiRequest()` helper in `src/lib/api/core/http.ts`.\n3. The HTTP layer builds the full backend URL from `API_URL`.\n4. The backend response is parsed into a raw DTO.\n5. The domain mapper converts the DTO into the model used by the UI.\n6. The page renders only the mapped model and does not need to know transport details.\n\n### CQRS rule of thumb\n\n- `queries.ts` is the read side. Query functions should fetch data and return mapped read models without causing backend state changes.\n- `commands.ts` is the write side. Command functions may create, update, submit, revoke, provision, or otherwise change backend state.\n- Pages and server components should import domain queries for route data.\n- Server actions, route handlers, and event-style flows should import domain commands for writes.\n- Query and command functions should import the shared HTTP client directly instead of calling each other.\n- Only mappers should translate backend field naming into frontend naming.\n- New endpoints should be added inside a domain folder instead of wiring `fetch` directly in the page.\n\n### TanStack Query v5 guidance\n\nThis project should keep the server-first API pattern as the default for route entry, auth-sensitive data, redirects, secure server-only calls, and initial shell data. TanStack Query v5 is the preferred client server-state layer once a domain grows into dynamic CRUD screens with tables, detail panes, filters, sorting, pagination, background refresh, optimistic updates, or multiple components reading the same backend entities.\n\nUse this split:\n\n- Server components and route entry code handle auth checks, initial shell data, redirects, secure server-only calls, and optional prefetch/dehydrate for important first-screen queries.\n- TanStack Query handles CRUD tables, detail panes, filters, sorting, pagination, mutations, optimistic updates, invalidation after writes, and background synchronization.\n\nDo not replace `src/lib/api` wholesale. Evolve each domain only when it needs browser-side server-state behavior:\n\n```text\nsrc/lib/api/domains/<domain>/\n  contract.ts\n  mapper.ts\n  queries.ts        server-only reads, current pattern\n  commands.ts       server-only writes, current pattern\n  client.ts         browser-safe fetchers for TanStack Query\n  query-keys.ts     stable TanStack Query key factory\n  query-options.ts  reusable queryOptions/useQuery config\n```\n\nKeep `contract.ts` and `mapper.ts` as the shared boundary for backend DTOs and frontend models. Browser-safe `client.ts` functions should use public backend endpoints or Next.js route handlers; they must not import server-only helpers such as `src/lib/api/core/http.ts`.\n\n### Example: adding a new endpoint\n\nIf you need a new `users` integration, add:\n\n```text\nsrc/lib/api/domains/users/\n  contract.ts\n  mapper.ts\n  queries.ts\n  commands.ts\n```\n\nThen:\n\n- define the backend DTOs in `contract.ts`\n- define the frontend model in `contract.ts`\n- map DTO -> model in `mapper.ts`\n- call `apiRequest()` in `queries.ts`\n- call `apiRequest()` in `commands.ts` for writes\n- import the query from the page or server component\n\n### Example: command\n\nFor write flows, add a `commands.ts` file to the domain. A typical command keeps the request DTO, response DTO, and mapped frontend model inside the same domain boundary.\n\nThis repo now includes a concrete example in `src/lib/api/domains/applications/`.\n\nCQRS rule of thumb:\n\n- `queries.ts` is for reads.\n- `commands.ts` is for writes.\n- Both should call `apiRequest()`.\n- Queries should not call commands, and commands should not call queries.\n- Only the domain layer should know raw backend field names.\n- Components should consume mapped frontend models, not DTOs.\n\n### Transitional compatibility\n\nLegacy flat files such as `src/lib/api/client.ts` and `src/lib/api/contracts.ts` currently re-export the new modules. That keeps the refactor incremental while new code moves to the domain-folder pattern.\n\n## Deployment\n\nCI deploys the `main` branch automatically. Check the CI configuration at `.github/workflows/` for pipeline details.\n"}], "grading": {"eval_id": 2, "eval_name": "update-stale", "configuration": "with_skill", "assertions": [{"text": "Existing API integration pattern documentation is preserved", "passed": true, "evidence": "Output contains 'CQRS', 'apiRequest', 'domain folder'; detailed architecture sections preserved though code examples were condensed"}, {"text": "Getting Started section is added with actual commands", "passed": true, "evidence": "'## Getting Started' with pnpm install, pnpm dev commands added"}, {"text": "Environment Variables section is added", "passed": true, "evidence": "'## Environment Variables' table with API_URL, DATABASE_URL, and all 14 vars added"}, {"text": "Onboarding sections appear before architectural documentation", "passed": true, "evidence": "Prerequisites \u00e2\u2020\u2019 Getting Started \u00e2\u2020\u2019 Environment Variables \u00e2\u2020\u2019 Scripts \u00e2\u2020\u2019 Structure \u00e2\u2020\u2019 Architecture \u00e2\u2020\u2019 Tech Stack \u00e2\u2020\u2019 API Integration Pattern (in that order)"}, {"text": "Available scripts section is added referencing pnpm dev, pnpm build, pnpm lint", "passed": true, "evidence": "'## Available Scripts' table added with pnpm dev, pnpm build, pnpm start, pnpm lint"}], "pass_count": 5, "total_count": 5, "pass_rate": 1.0}}, {"id": "eval-update-stale-without_skill", "prompt": "Our README only documents the API pattern but a new dev can't figure out how to run this locally. Fix it \u00e2\u20ac\u201d add proper developer onboarding sections but keep the existing API documentation.", "eval_id": 2, "outputs": [{"name": "README.md", "type": "text", "content": "# CI-PRS Web\n\n## Prerequisites\n\n- Node.js 20 or later\n- pnpm (install via `npm install -g pnpm` if not already available)\n- A running instance of the backend API (default: `http://127.0.0.1:8000`)\n- PostgreSQL database accessible via connection string\n\n## Getting started\n\n### 1. Install dependencies\n\n```bash\npnpm install\n```\n\n### 2. Configure environment variables\n\nCopy the example environment file and fill in the required values:\n\n```bash\ncp .env.example .env.local\n```\n\nOpen `.env.local` and set the following:\n\n| Variable | Required | Description |\n|---|---|---|\n| `API_URL` | Yes | URL of the backend API (default: `http://127.0.0.1:8000`) |\n| `BETTER_AUTH_SECRET` | Yes | Random secret string for session signing (generate with `openssl rand -hex 32`) |\n| `BETTER_AUTH_URL` | Yes | Public URL of this Next.js app (default: `http://127.0.0.1:3000`) |\n| `DATABASE_URL` | Yes | PostgreSQL connection string (e.g. `postgresql://user:pass@localhost:5432/dbname`) |\n| `LARAVEL_INTERNAL_AUTH_TOKEN` | Yes | Internal token for backend auth calls |\n| `LARAVEL_INTERNAL_AUTH_MAIL_TOKEN` | Yes | Internal token for backend mail auth calls |\n| `LARAVEL_INTERNAL_AUTH_REVOKE_TOKEN` | Yes | Internal token for backend revoke auth calls |\n| `AUTH_SIGNUP_ENABLED` | No | Enable or disable user self-registration (default: `true`) |\n| `AUTH_SSO_ENABLED` | No | Enable SSO login (default: `false`) |\n| `AUTH_SUPPORT_LABEL` | No | Label shown on the support link on auth pages |\n| `AUTH_SUPPORT_URL` | No | URL for the support link on auth pages |\n| `KEYCLOAK_CLIENT_ID` | No | Keycloak client ID (required when `AUTH_SSO_ENABLED=true`) |\n| `KEYCLOAK_CLIENT_SECRET` | No | Keycloak client secret (required when `AUTH_SSO_ENABLED=true`) |\n| `KEYCLOAK_ISSUER` | No | Keycloak issuer URL (required when `AUTH_SSO_ENABLED=true`) |\n\n### 3. Run the development server\n\n```bash\npnpm dev\n```\n\nThe app will be available at [http://localhost:3000](http://localhost:3000).\n\n## Available scripts\n\n| Script | Description |\n|---|---|\n| `pnpm dev` | Start the Next.js development server with hot reload |\n| `pnpm build` | Build the app for production |\n| `pnpm start` | Start the production server (requires `pnpm build` first) |\n| `pnpm lint` | Run ESLint across the project |\n\n## Project structure\n\n```text\nsrc/\n  app/           Next.js App Router routes (domain folders under src/app/<domain>/)\n  components/    Shared and domain UI components (src/components/<domain>/)\n  hooks/         Shared React hooks\n  lib/\n    api/         Server-first API layer (see API integration pattern below)\n```\n\n## Tech stack\n\n- **Next.js 16** App Router with React 19 and server components by default\n- **TypeScript 5** with strict mode\n- **Tailwind CSS v4** for styling\n- **shadcn/ui** (`base-nova` style) for UI primitives\n- **better-auth** for authentication\n- **TanStack Table v8** and **TanStack Query v5** for data-heavy screens\n- **Zod v4** for schema validation\n- **PostgreSQL** via `pg`\n\n---\n\n## API integration pattern\n\nThis project uses a server-first API layer in `src/lib/api` so page and component code stay small even when backend integration grows.\n\n### Goals\n\n- Keep transport details out of pages and components.\n- Keep backend DTOs separate from frontend view models.\n- Make each backend area grow inside its own domain folder.\n- Allow the UI to handle backend failures consistently.\n\n### Folder structure\n\n```text\nsrc/lib/api/\n  core/\n    config.ts\n    http.ts\n  contracts/\n    common.ts\n  domains/\n    landing-page/\n      contract.ts\n      mapper.ts\n      queries.ts\n    applications/\n      contract.ts\n      mapper.ts\n      commands.ts\n```\n\n### Responsibilities\n\n- `src/lib/api/core/config.ts`\n  Reads API configuration such as `API_URL` and builds absolute backend URLs.\n- `src/lib/api/core/http.ts`\n  Owns the shared `fetch` wrapper, JSON parsing, and normalized API error handling.\n- `src/lib/api/contracts/common.ts`\n  Defines common request, response, and error types used across domains.\n- `src/lib/api/domains/<domain>/contract.ts`\n  Defines the raw backend payloads and the frontend-friendly models for that domain.\n- `src/lib/api/domains/<domain>/mapper.ts`\n  Maps backend DTO fields like `primary_cta_label` into frontend fields like `primaryCtaLabel`.\n- `src/lib/api/domains/<domain>/queries.ts`\n  Contains read-side operations for that domain and decides how fallback behavior should work.\n- `src/lib/api/domains/<domain>/commands.ts`\n  Contains write-side operations for that domain such as create, update, submit, and delete flows.\n\n### Request flow\n\n1. A page imports a domain query, for example `getLandingPageContent` from `src/lib/api/domains/landing-page/queries.ts`.\n2. The domain query calls the shared `apiRequest()` helper in `src/lib/api/core/http.ts`.\n3. The HTTP layer builds the full backend URL from `API_URL`.\n4. The backend response is parsed into a raw DTO.\n5. The domain mapper converts the DTO into the model used by the UI.\n6. The page renders only the mapped model and does not need to know transport details.\n\n### CQRS rule of thumb\n\n- `queries.ts` is the read side. Query functions should fetch data and return mapped read models without causing backend state changes.\n- `commands.ts` is the write side. Command functions may create, update, submit, revoke, provision, or otherwise change backend state.\n- Pages and server components should import domain queries for route data.\n- Server actions, route handlers, and event-style flows should import domain commands for writes.\n- Query and command functions should import the shared HTTP client directly instead of calling each other.\n- Only mappers should translate backend field naming into frontend naming.\n- New endpoints should be added inside a domain folder instead of wiring `fetch` directly in the page.\n\n### TanStack Query v5 guidance\n\nThis project should keep the server-first API pattern as the default for route entry, auth-sensitive data, redirects, secure server-only calls, and initial shell data. TanStack Query v5 is the preferred client server-state layer once a domain grows into dynamic CRUD screens with tables, detail panes, filters, sorting, pagination, background refresh, optimistic updates, or multiple components reading the same backend entities.\n\nUse this split:\n\n- Server components and route entry code handle auth checks, initial shell data, redirects, secure server-only calls, and optional prefetch/dehydrate for important first-screen queries.\n- TanStack Query handles CRUD tables, detail panes, filters, sorting, pagination, mutations, optimistic updates, invalidation after writes, and background synchronization.\n\nDo not replace `src/lib/api` wholesale. Evolve each domain only when it needs browser-side server-state behavior:\n\n```text\nsrc/lib/api/domains/<domain>/\n  contract.ts\n  mapper.ts\n  queries.ts        server-only reads, current pattern\n  commands.ts       server-only writes, current pattern\n  client.ts         browser-safe fetchers for TanStack Query\n  query-keys.ts     stable TanStack Query key factory\n  query-options.ts  reusable queryOptions/useQuery config\n```\n\nKeep `contract.ts` and `mapper.ts` as the shared boundary for backend DTOs and frontend models. Browser-safe `client.ts` functions should use public backend endpoints or Next.js route handlers; they must not import server-only helpers such as `src/lib/api/core/http.ts`.\n\nDefine stable query keys per domain from the first CRUD screen:\n\n```ts\nexport const applicationsKeys = {\n  all: [\"applications\"] as const,\n  lists: () => [...applicationsKeys.all, \"list\"] as const,\n  list: (filters: ApplicationFilters) =>\n    [...applicationsKeys.lists(), filters] as const,\n  detail: (id: string) => [...applicationsKeys.all, \"detail\", id] as const,\n};\n```\n\nAfter mutations, invalidate the smallest related surfaces that must reflect the write:\n\n```ts\nconst queryClient = useQueryClient();\n\nuseMutation({\n  mutationFn: updateApplication,\n  onSuccess: async (_, variables) => {\n    await Promise.all([\n      queryClient.invalidateQueries({ queryKey: applicationsKeys.lists() }),\n      queryClient.invalidateQueries({\n        queryKey: applicationsKeys.detail(variables.id),\n      }),\n    ]);\n  },\n});\n```\n\nAdd the TanStack Query provider and hydration setup when the first real CRUD domain needs it. Avoid adding global Query usage for static landing content, route-level auth gates, or simple one-shot server-rendered data.\n\n### Example: adding a new endpoint\n\nIf you need a new `users` integration, add:\n\n```text\nsrc/lib/api/domains/users/\n  contract.ts\n  mapper.ts\n  queries.ts\n  commands.ts\n```\n\nThen:\n\n- define the backend DTOs in `contract.ts`\n- define the frontend model in `contract.ts`\n- map DTO -> model in `mapper.ts`\n- call `apiRequest()` in `queries.ts`\n- call `apiRequest()` in `commands.ts` for writes\n- import the query from the page or server component\n\nIf the endpoint belongs to an interactive CRUD surface, also add:\n\n```text\nsrc/lib/api/domains/users/\n  client.ts\n  query-keys.ts\n  query-options.ts\n```\n\nThen:\n\n- keep browser-safe fetchers in `client.ts`\n- keep stable query key factories in `query-keys.ts`\n- keep reusable TanStack Query options in `query-options.ts`\n- invalidate list and detail keys after successful writes\n\n### Example: command\n\nFor write flows, add a `commands.ts` file to the domain. A typical command keeps the request DTO, response DTO, and mapped frontend model inside the same domain boundary.\n\nThis repo now includes a concrete example in `src/lib/api/domains/applications/`.\n\n```ts\n// src/lib/api/domains/applications/commands.ts\nimport \"server-only\";\n\nimport { apiRequest } from \"@/lib/api/core/http\";\nimport type { ApiResult } from \"@/lib/api/contracts/common\";\nimport { mapApplication } from \"@/lib/api/domains/applications/mapper\";\nimport type {\n  Application,\n  ApplicationPayload,\n  CreateApplicationInput,\n} from \"@/lib/api/domains/applications/contract\";\n\nexport async function createApplication(\n  input: CreateApplicationInput,\n): Promise<ApiResult<Application>> {\n  const result = await apiRequest<ApplicationPayload, CreateApplicationInput>({\n    path: \"/api/applications\",\n    method: \"POST\",\n    body: input,\n  });\n\n  if (!result.ok) {\n    return result;\n  }\n\n  return {\n    ok: true,\n    status: result.status,\n    data: mapApplication(result.data),\n  };\n}\n```\n\nExample contract shape:\n\n```ts\n// src/lib/api/domains/applications/contract.ts\nexport type CreateApplicationInput = {\n  firstName: string;\n  lastName: string;\n  email: string;\n};\n\nexport type ApplicationPayload = {\n  id: string;\n  first_name: string;\n  last_name: string;\n  email: string;\n  status: \"draft\" | \"submitted\";\n};\n\nexport type Application = {\n  id: string;\n  firstName: string;\n  lastName: string;\n  email: string;\n  status: \"draft\" | \"submitted\";\n};\n```\n\nExample mapper:\n\n```ts\n// src/lib/api/domains/applications/mapper.ts\nimport type {\n  Application,\n  ApplicationPayload,\n} from \"@/lib/api/domains/applications/contract\";\n\nexport function mapApplication(payload: ApplicationPayload): Application {\n  return {\n    id: payload.id,\n    firstName: payload.first_name,\n    lastName: payload.last_name,\n    email: payload.email,\n    status: payload.status,\n  };\n}\n```\n\nCQRS rule of thumb:\n\n- `queries.ts` is for reads.\n- `commands.ts` is for writes.\n- Both should call `apiRequest()`.\n- Queries should not call commands, and commands should not call queries.\n- Only the domain layer should know raw backend field names.\n- Components should consume mapped frontend models, not DTOs.\n\n### Transitional compatibility\n\nLegacy flat files such as `src/lib/api/client.ts` and `src/lib/api/contracts.ts` currently re-export the new modules. That keeps the refactor incremental while new code moves to the domain-folder pattern.\n"}], "grading": {"eval_id": 2, "eval_name": "update-stale", "configuration": "without_skill", "assertions": [{"text": "Existing API integration pattern documentation is preserved", "passed": true, "evidence": "Entire original README content preserved verbatim after --- separator; contains CQRS, apiRequest, domain folder, all code examples intact"}, {"text": "Getting Started section is added with actual commands", "passed": true, "evidence": "'## Getting started' with 3-step numbered flow including pnpm install and pnpm dev"}, {"text": "Environment Variables section is added", "passed": true, "evidence": "'## Configure environment variables' step includes full table with API_URL, DATABASE_URL and all vars"}, {"text": "Onboarding sections appear before architectural documentation", "passed": true, "evidence": "New onboarding sections prepended before original content, separated by '---'"}, {"text": "Available scripts section is added referencing pnpm dev, pnpm build, pnpm lint", "passed": true, "evidence": "'## Available scripts' table with pnpm dev, pnpm build, pnpm start, pnpm lint added"}], "pass_count": 5, "total_count": 5, "pass_rate": 1.0}}, {"id": "eval-contributing-scoped-with_skill", "prompt": "What should the contributing section of our README say? We use conventional commits and PRs need at least one review before merge.", "eval_id": 3, "outputs": [{"name": "contributing.md", "type": "text", "content": "## Contributing\n\n### Branch Naming\n\nUse short, descriptive branch names prefixed by type:\n\n```\nfeat/short-description\nfix/short-description\nchore/short-description\n```\n\n### Commit Messages\n\nThis project follows [Conventional Commits](https://www.conventionalcommits.org/). Every commit message must have a type prefix:\n\n```\nfeat: add user profile page\nfix: correct token expiry handling\nchore: update dependencies\ndocs: clarify environment variable setup\n```\n\nCommon types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `style`, `perf`.\n\n### Pull Requests\n\n- Open a PR against `master` when your branch is ready for review.\n- At least **one approving review** is required before merging.\n- Keep PRs focused \u00e2\u20ac\u201d one logical change per PR makes review faster.\n- If your change affects setup steps, scripts, or environment variables, update the README in the same PR.\n"}], "grading": {"eval_id": 3, "eval_name": "contributing-scoped", "configuration": "with_skill", "assertions": [{"text": "Output has a Contributing section heading", "passed": true, "evidence": "Starts with '## Contributing' heading"}, {"text": "Output mentions Conventional Commits explicitly", "passed": true, "evidence": "'This project follows [Conventional Commits]'"}, {"text": "Output includes concrete commit message prefix examples", "passed": true, "evidence": "Shows feat:, fix:, chore:, docs: examples in code block"}, {"text": "Output mentions the PR review requirement", "passed": true, "evidence": "'At least one approving review is required before merging'"}, {"text": "Output is concise \u00e2\u20ac\u201d not a generic wall of text", "passed": true, "evidence": "~170 words, no generic boilerplate opener, uses headings to organize"}], "pass_count": 5, "total_count": 5, "pass_rate": 1.0}}, {"id": "eval-contributing-scoped-without_skill", "prompt": "What should the contributing section of our README say? We use conventional commits and PRs need at least one review before merge.", "eval_id": 3, "outputs": [{"name": "contributing.md", "type": "text", "content": "## Contributing\n\n### Commit messages\n\nThis project follows [Conventional Commits](https://www.conventionalcommits.org/). Every commit message must have a structured prefix:\n\n```\n<type>(<scope>): <short summary>\n```\n\nCommon types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `style`, `perf`.\n\nExamples:\n\n```\nfeat(auth): add sign-in page with TanStack Form\nfix(api): handle empty response from applications endpoint\nchore(deps): upgrade shadcn/ui to latest\n```\n\nKeep the summary short (under 72 characters), written in the imperative mood, and lowercase after the colon.\n\n### Pull requests\n\n- Open a PR for every change \u00e2\u20ac\u201d do not push directly to `master`.\n- At least one review approval is required before merging.\n- Keep PRs focused. One logical change per PR makes review faster and reverts cleaner.\n- Make sure `pnpm lint` passes before requesting review. Run `pnpm build` when your change touches route structure, types, or API integration.\n- Address all review comments before merging. Resolve threads you have acted on; leave threads open if you need a follow-up from the reviewer.\n\n### Branch naming\n\nUse a short, descriptive name prefixed with the work type:\n\n```\nfeat/sign-in-page\nfix/api-error-fallback\nchore/upgrade-deps\n```\n"}], "grading": {"eval_id": 3, "eval_name": "contributing-scoped", "configuration": "without_skill", "assertions": [{"text": "Output has a Contributing section heading", "passed": true, "evidence": "Starts with '## Contributing' heading"}, {"text": "Output mentions Conventional Commits explicitly", "passed": true, "evidence": "'This project follows [Conventional Commits]'"}, {"text": "Output includes concrete commit message prefix examples", "passed": true, "evidence": "Shows feat(auth):, fix(api):, chore(deps): examples with scope syntax"}, {"text": "Output mentions the PR review requirement", "passed": true, "evidence": "'At least one review approval is required before merging'"}, {"text": "Output is concise \u00e2\u20ac\u201d not a generic wall of text", "passed": true, "evidence": "~240 words, no generic opener, organized into subsections"}], "pass_count": 5, "total_count": 5, "pass_rate": 1.0}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"iteration": 1, "skill_name": "update-readme", "configurations": [{"name": "with_skill", "evals": [{"eval_id": 1, "eval_name": "write-fresh", "pass_rate": 1.0, "tokens": 22747, "duration_ms": 83875}, {"eval_id": 2, "eval_name": "update-stale", "pass_rate": 1.0, "tokens": 23363, "duration_ms": 156609}, {"eval_id": 3, "eval_name": "contributing-scoped", "pass_rate": 1.0, "tokens": 15406, "duration_ms": 21059}], "aggregate": {"mean_pass_rate": 1.0, "mean_tokens": 20505, "mean_duration_ms": 87181}}, {"name": "without_skill", "evals": [{"eval_id": 1, "eval_name": "write-fresh", "pass_rate": 1.0, "tokens": 23696, "duration_ms": 102543}, {"eval_id": 2, "eval_name": "update-stale", "pass_rate": 1.0, "tokens": 17069, "duration_ms": 72013}, {"eval_id": 3, "eval_name": "contributing-scoped", "pass_rate": 1.0, "tokens": 19479, "duration_ms": 30301}], "aggregate": {"mean_pass_rate": 1.0, "mean_tokens": 20081, "mean_duration_ms": 68286}}], "analyst_notes": ["All assertions pass for both configurations \u00e2\u20ac\u201d assertions may be non-discriminating at this level. Qualitative differences are where the skill's value shows.", "with_skill outputs are more structured (tables for scripts/env vars/tech stack, links to context/ docs, explicit arch overview bullets). without_skill outputs tend to be richer in developer workflow guidance (shadcn install commands, 'Adding a New Domain' step-by-step).", "Eval 2 (update-stale): with_skill condensed some long code examples from the original README; without_skill preserved them verbatim. Skill's 'link, don't duplicate' principle caused the trimming.", "Eval 3 (contributing-scoped): without_skill included scope syntax in commit format and more PR process detail (lint/build checks, thread resolution). Skill output was more minimal.", "Recommendation: add assertions that check for qualitative structure differences (e.g. uses tables vs prose lists, links to context/ docs) to make the benchmark discriminating."]}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

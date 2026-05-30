@@ -1,0 +1,32 @@
+{
+  "eval_id": 2,
+  "eval_name": "update-stale",
+  "prompt": "Our README only documents the API pattern but a new dev can't figure out how to run this locally. Fix it — add proper developer onboarding sections but keep the existing API documentation.",
+  "assertions": [
+    {
+      "id": "preserves-api-pattern",
+      "description": "Existing API integration pattern documentation is preserved",
+      "check": "Output still contains 'CQRS' and 'apiRequest' and 'domain folder' references from the original README"
+    },
+    {
+      "id": "adds-getting-started",
+      "description": "Getting Started section is added with actual commands",
+      "check": "Output now contains a 'Getting Started' section with pnpm commands"
+    },
+    {
+      "id": "adds-env-vars",
+      "description": "Environment Variables section is added",
+      "check": "Output now contains an 'Environment' section with at least API_URL and DATABASE_URL"
+    },
+    {
+      "id": "onboarding-before-arch",
+      "description": "Onboarding sections appear before architectural documentation",
+      "check": "Getting Started section appears before the API integration pattern section in the output"
+    },
+    {
+      "id": "adds-scripts",
+      "description": "Available scripts section is added",
+      "check": "Output references pnpm dev, pnpm build, and pnpm lint"
+    }
+  ]
+}

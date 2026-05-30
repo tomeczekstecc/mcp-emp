@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design Pattern Check"
+  short_description: "Architecture and abstraction sanity check"
+  default_prompt: "Use $design-pattern-check to review the relevant frontend code for component boundaries, state ownership, abstraction quality, coupling, and pattern fit."

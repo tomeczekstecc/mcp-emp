@@ -1,0 +1,35 @@
+{
+  "eval_id": 2,
+  "eval_name": "update-stale",
+  "configuration": "with_skill",
+  "assertions": [
+    {
+      "text": "Existing API integration pattern documentation is preserved",
+      "passed": true,
+      "evidence": "Output contains 'CQRS', 'apiRequest', 'domain folder'; detailed architecture sections preserved though code examples were condensed"
+    },
+    {
+      "text": "Getting Started section is added with actual commands",
+      "passed": true,
+      "evidence": "'## Getting Started' with pnpm install, pnpm dev commands added"
+    },
+    {
+      "text": "Environment Variables section is added",
+      "passed": true,
+      "evidence": "'## Environment Variables' table with API_URL, DATABASE_URL, and all 14 vars added"
+    },
+    {
+      "text": "Onboarding sections appear before architectural documentation",
+      "passed": true,
+      "evidence": "Prerequisites → Getting Started → Environment Variables → Scripts → Structure → Architecture → Tech Stack → API Integration Pattern (in that order)"
+    },
+    {
+      "text": "Available scripts section is added referencing pnpm dev, pnpm build, pnpm lint",
+      "passed": true,
+      "evidence": "'## Available Scripts' table added with pnpm dev, pnpm build, pnpm start, pnpm lint"
+    }
+  ],
+  "pass_count": 5,
+  "total_count": 5,
+  "pass_rate": 1.0
+}

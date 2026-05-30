@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Form"
+  short_description: "React forms with TanStack Form and Zod"
+  default_prompt: "Use $tanstack-form to build or refactor forms in apps/web with TanStack Form, Zod validation, accessible field wiring, and repo-aligned form patterns."

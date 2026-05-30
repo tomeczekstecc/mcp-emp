@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Review"
+  short_description: "Bug-focused review of frontend changes"
+  default_prompt: "Use $code-review to review the relevant frontend changes with a findings-first mindset. Prioritize bugs, regressions, risky assumptions, and missing edge-case handling."

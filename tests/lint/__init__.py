@@ -1,0 +1,1 @@
+"""Lint / architectural-rule tests."""

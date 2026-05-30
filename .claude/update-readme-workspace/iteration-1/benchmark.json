@@ -1,0 +1,75 @@
+{
+  "iteration": 1,
+  "skill_name": "update-readme",
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {
+          "eval_id": 1,
+          "eval_name": "write-fresh",
+          "pass_rate": 1.0,
+          "tokens": 22747,
+          "duration_ms": 83875
+        },
+        {
+          "eval_id": 2,
+          "eval_name": "update-stale",
+          "pass_rate": 1.0,
+          "tokens": 23363,
+          "duration_ms": 156609
+        },
+        {
+          "eval_id": 3,
+          "eval_name": "contributing-scoped",
+          "pass_rate": 1.0,
+          "tokens": 15406,
+          "duration_ms": 21059
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 1.0,
+        "mean_tokens": 20505,
+        "mean_duration_ms": 87181
+      }
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {
+          "eval_id": 1,
+          "eval_name": "write-fresh",
+          "pass_rate": 1.0,
+          "tokens": 23696,
+          "duration_ms": 102543
+        },
+        {
+          "eval_id": 2,
+          "eval_name": "update-stale",
+          "pass_rate": 1.0,
+          "tokens": 17069,
+          "duration_ms": 72013
+        },
+        {
+          "eval_id": 3,
+          "eval_name": "contributing-scoped",
+          "pass_rate": 1.0,
+          "tokens": 19479,
+          "duration_ms": 30301
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 1.0,
+        "mean_tokens": 20081,
+        "mean_duration_ms": 68286
+      }
+    }
+  ],
+  "analyst_notes": [
+    "All assertions pass for both configurations — assertions may be non-discriminating at this level. Qualitative differences are where the skill's value shows.",
+    "with_skill outputs are more structured (tables for scripts/env vars/tech stack, links to context/ docs, explicit arch overview bullets). without_skill outputs tend to be richer in developer workflow guidance (shadcn install commands, 'Adding a New Domain' step-by-step).",
+    "Eval 2 (update-stale): with_skill condensed some long code examples from the original README; without_skill preserved them verbatim. Skill's 'link, don't duplicate' principle caused the trimming.",
+    "Eval 3 (contributing-scoped): without_skill included scope syntax in commit format and more PR process detail (lint/build checks, thread resolution). Skill output was more minimal.",
+    "Recommendation: add assertions that check for qualitative structure differences (e.g. uses tables vs prose lists, links to context/ docs) to make the benchmark discriminating."
+  ]
+}
