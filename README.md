@@ -48,7 +48,8 @@ npx @modelcontextprotocol/inspector mcp-emp
 ```
 
 See **[docs/guides/quick-start.md](docs/guides/quick-start.md)** for step-by-step
-instructions and host-specific configuration.
+instructions and **[docs/guides/host-integrations.md](docs/guides/host-integrations.md)**
+for every supported host (Claude Desktop, Claude Code, Cursor, pi, Codex, n8n, HTTP).
 
 ---
 

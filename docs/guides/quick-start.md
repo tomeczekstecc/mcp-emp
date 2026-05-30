@@ -92,6 +92,9 @@ Then call `health_check` in the Tools tab — it should return:
 
 ## 4. Connect your LLM host
 
+See **[host-integrations.md](host-integrations.md)** for complete,
+copy-paste configs for every supported host. Quick summary below.
+
 ### Claude Desktop
 
 `%APPDATA%\Claude\claude_desktop_config.json` (Windows)  
