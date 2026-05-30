@@ -8,7 +8,6 @@ from pathlib import Path
 import pytest
 
 from mcp_emp.core.templates.db import (
-    TaskTemplate,
     add_template,
     delete_template,
     get_template,
@@ -100,5 +99,5 @@ def test_render_tag_ids(db) -> None:  # type: ignore[no-untyped-def]
 
 def test_duplicate_name_raises(db) -> None:  # type: ignore[no-untyped-def]
     add_template(db, "unique", 1)
-    with pytest.raises(Exception):  # sqlite UNIQUE constraint
+    with pytest.raises(Exception, match="UNIQUE"):  # sqlite UNIQUE constraint
         add_template(db, "unique", 2)

@@ -262,3 +262,41 @@ Example: `emp_alice_7f3a9b2c1d4e5f6a7b8c9d0e1f2a3b4c`
 
 The full key is **212+ bits of effective security** (prefix is predictable but
 the 32-hex suffix is random).  SHA-256 hash is stored in the DB.
+
+---
+
+## Template management (mcp-emp template)
+
+Task templates live in a separate SQLite database at `~/.mcp_emp/templates.db`.
+They are managed independently from auth users.
+
+```bash
+# Create a template for daily standups
+mcp-emp template add daily_standup \
+  --task-type-id 28 \
+  --subject "Standup {today}" \
+  --deadline-days 0
+
+# Create a template with tags
+mcp-emp template add bug_fix \
+  --task-type-id 28 \
+  --subject "Poprawka: {today}" \
+  --tags "1,5"
+
+# List all templates
+mcp-emp template list
+
+# Show a specific template in JSON
+mcp-emp template show daily_standup
+
+# Delete a template
+mcp-emp template delete old_template
+```
+
+Then in your LLM session:
+```
+> "create a standup task for today"
+LLM → list_templates() → picks "daily_standup"
+LLM → apply_template("daily_standup", dry_run=true) → preview
+LLM → apply_template("daily_standup") → task created
+```

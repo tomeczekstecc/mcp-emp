@@ -424,3 +424,129 @@ All errors carry a machine-readable `code` in `error.data.code`:
 | `CONFIRMATION_REQUIRED` | Destructive operation needs a confirmation token. |
 | `CONFIRMATION_INVALID` | Token expired, already used, or payload-hash mismatch. |
 | `READ_ONLY` | Server is in read-only mode. |
+
+---
+
+## bulk_create_tasks
+
+Create multiple tasks at once with a two-step confirmation.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `tasks` | list[dict] | **required** | Each dict: `task_type_id` (required), `subject`, `deadline`, `notes`, `url`, `sod_number`, `tag_ids`. |
+| `confirmation_token` | string | `""` | Token from step 1. Empty = step 1. |
+| `dry_run` | bool | `false` | Validate and preview without issuing a token. |
+
+**Step 1 response:**
+```json
+{
+  "preview": [{"index": 0, "task_type": "Spotkanie", "subject": "Daily standup"}],
+  "confirmation_token": "bulk_create_...",
+  "expires_in_seconds": 300,
+  "note": "Call again with confirmation_token='...' to create."
+}
+```
+
+**Step 2 response:**
+```json
+{ "created": 3, "task_ids": [151600, 151601, 151602] }
+```
+
+---
+
+## bulk_delete_tasks
+
+Delete multiple W_EDYCJI (draft) tasks with two-step confirmation.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `task_ids` | list[int] | **required** | Task IDs to delete. Non-W_EDYCJI tasks are silently skipped. |
+| `confirmation_token` | string | `""` | Token from step 1. |
+| `dry_run` | bool | `false` | Preview without issuing a token. |
+
+---
+
+## list_templates
+
+List saved task templates. Templates are managed via `mcp-emp template` CLI.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `search` | string | `""` | Substring filter on template name. |
+
+```json
+[
+  {
+    "name": "daily_standup",
+    "task_type_id": 28,
+    "subject_template": "Standup {today}",
+    "deadline_offset_days": null,
+    "tag_ids": [1]
+  }
+]
+```
+
+---
+
+## apply_template
+
+Create a task from a saved template.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `name` | string | **required** | Template name from `list_templates`. |
+| `subject` | string | `""` | Override the template subject. |
+| `deadline` | string | `""` | Override the deadline (ISO 8601). |
+| `dry_run` | bool | `false` | Preview without creating. |
+
+**Template variables** (in subject/notes):
+- `{today}` or `{date}` — today's date (`2026-05-30`)
+- `{cycle}` — current EMP cycle number
+
+---
+
+## detect_recurring_tasks
+
+Find task types that appear repeatedly in history.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `min_count` | int | `3` | Minimum occurrences to be considered recurring. |
+
+```json
+[
+  {
+    "task_type_id": 28,
+    "task_type_name": "Drobna poprawka/zmiana",
+    "count": 47,
+    "avg_points": 2.0,
+    "example_subject": "eDrogi - poprawka...",
+    "suggested_subject": "Edrogid Poprawka"
+  }
+]
+```
+
+---
+
+## suggest_task_completions
+
+Rank REALIZOWANE tasks by completion urgency.
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `limit` | int | `10` | Max suggestions to return. |
+
+**Scoring:** overdue > near-deadline (≤3 days) > high points (≥5) > long-running (≥7 days, no deadline).
+
+```json
+[
+  {
+    "task_id": 134500,
+    "subject": "eDrogi bug fix",
+    "score": 115.0,
+    "reason": "overdue by 3 day(s)",
+    "deadline": "2026-05-27",
+    "days_running": 10
+  }
+]
+```
