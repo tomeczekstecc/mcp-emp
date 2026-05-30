@@ -27,6 +27,11 @@ async def emp_db_connection() -> AsyncIterator[asyncpg.Connection]:
     from mcp_emp.core.config import get_settings  # noqa: PLC0415
 
     s = get_settings()
+    if not s.db_enabled:
+        raise RuntimeError(
+            "Direct DB access is disabled. Set MCP_EMP_DB_ENABLED=true and "
+            "configure MCP_EMP_DB_HOST/USER/PASS/DATABASE to enable backdate_task."
+        )
     if not s.db_host or not s.db_user or not s.db_database:
         raise RuntimeError(
             "EMP DB not configured. Set MCP_EMP_DB_HOST, MCP_EMP_DB_USER, "

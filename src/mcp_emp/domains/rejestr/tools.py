@@ -843,43 +843,38 @@ def register(server: FastMCP) -> None:
                 "subject": task.subject, "status": task.status}
 
 
-    # ── Direct DB: backdate ──────────────────────────────────────────────────
+    # ── Direct DB: backdate (only when MCP_EMP_DB_ENABLED=true) ─────────────
 
-    @server.tool()
-    @mutating
-    async def backdate_task(
-        task_id: int,
-        target_date: str,
-        set_completion_date: bool = False,
-    ) -> dict[str, object]:
-        """Set historical dates on a task directly in the EMP PostgreSQL database.
+    from mcp_emp.core.config import get_settings as _gs  # noqa: PLC0415
+    if _gs().db_enabled:
 
-        Used for retroactively logging tasks from previous months.
-        The API cannot change data_zlecenia retroactively after completion
-        (Zakoncz overwrites it), so this tool goes directly to the DB.
+        @server.tool()
+        @mutating
+        async def backdate_task(
+            task_id: int,
+            target_date: str,
+            set_completion_date: bool = False,
+        ) -> dict[str, object]:
+            """Set historical dates on a task directly in the EMP PostgreSQL database.
 
-        Requires MCP_EMP_DB_HOST / DB_USER / DB_PASS / DB_DATABASE in .env.
+            Used for retroactively logging tasks from previous months.
+            Requires MCP_EMP_DB_ENABLED=true and DB credentials in .env.
 
-        Sets:
-          data_zlecenia, data_rozpoczecia, data_gotowe, data_przydzielenia
-          data_zakonczenia (only when set_completion_date=True)
+            Sets: data_zlecenia, data_rozpoczecia, data_gotowe, data_przydzielenia
+            and optionally data_zakonczenia (when set_completion_date=True).
 
-        Note: nr_cyklu is NOT changed — EMP assigned the current cycle at
-        creation/completion time. Cycle-based stats will show the task in the
-        current cycle regardless of date.
+            Note: nr_cyklu is NOT changed — EMP sets it at completion time.
 
-        Args:
-            task_id:              EMP task ID to backdate.
-            target_date:          Target date — ISO 8601 or YYYY-MM-DD
-                                  (e.g. '2026-01-15' or '2026-01-15T09:00:00').
-            set_completion_date:  When True, also sets data_zakonczenia to
-                                  target_date (useful for completed tasks).
+            Args:
+                task_id:              EMP task ID to backdate.
+                target_date:          Target date — ISO 8601 or YYYY-MM-DD.
+                set_completion_date:  Also set data_zakonczenia to target_date.
 
-        Returns:
-            Confirmation with updated date fields from the database.
-        """
-        from mcp_emp.core.emp_db import backdate_rejestr  # noqa: PLC0415
-        result = await backdate_rejestr(
-            task_id, target_date, set_zakonczenia=set_completion_date
-        )
-        return dict(result)
+            Returns:
+                Confirmation with updated date fields from the database.
+            """
+            from mcp_emp.core.emp_db import backdate_rejestr  # noqa: PLC0415
+            result = await backdate_rejestr(
+                task_id, target_date, set_zakonczenia=set_completion_date
+            )
+            return dict(result)

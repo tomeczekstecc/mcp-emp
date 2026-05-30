@@ -50,7 +50,8 @@ class Settings(BaseSettings):
     # Task templates
     templates_db_path: str = "~/.mcp_emp/templates.db"
 
-    # Direct EMP PostgreSQL access (for date backdating)
+    # Direct EMP DB access (for backdate_task tool)
+    db_enabled: bool = False   # set True to enable backdate_task
     db_host: str = ""          # e.g. https://emp-db.slaskie.pl (scheme stripped)
     db_port: int = 5432
     db_user: str = ""
