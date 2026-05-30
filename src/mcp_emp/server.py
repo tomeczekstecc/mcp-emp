@@ -113,6 +113,9 @@ def build_server() -> FastMCP:
     from mcp_emp.domains.stat import tools as stat_tools  # noqa: PLC0415
     stat_tools.register(server)
 
+    from mcp_emp.domains.analysis import tools as analysis_tools  # noqa: PLC0415
+    analysis_tools.register(server)
+
     # M4: add_my_task
     # M4-M6: rejestr write tools
 

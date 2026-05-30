@@ -115,6 +115,25 @@ statistics, user profile, and MCP API-key auth for the HTTP transport.
 
 ---
 
+## [0.3.0] — 2026-05-30 (P2 — Smart Assistance)
+
+### Added
+
+#### New tools (4) — 
+
+| Tool | Description |
+|---|---|
+|  | Full snapshot: in-progress, today's completions, upcoming deadlines, overdue tasks, waiting queue. Returns a human-readable  paragraph — ideal for standup notes. |
+|  | Scan all tasks for overdue (deadline passed), stalled (REALIZOWANE > N days), and awaiting (OCZEKUJĄCE). Returns a  sorted by severity. |
+|  | Suggest tag IDs for a new task based on keyword similarity to past task subjects. Returns  list with  and human-readable reason. |
+|  | Distribution of work across task types over a configurable time window (default 30 days): count, total points, avg points, completed/in-progress breakdown. |
+
+All four tools are **pure local computation** — no new EMP HTTP endpoints. They aggregate and analyse data from the existing task, stats, and dictionary endpoints.
+
+### Total: 23 tools
+
+---
+
 ## [0.2.0] — 2026-05-30
 
 ### Added
