@@ -1,0 +1,14 @@
+{
+  "item": {
+    "id": 3,
+    "name": "stect",
+    "email": "tomasz.stec@slaskie.pl",
+    "imie": "Tomasz",
+    "nazwisko": "Steć",
+    "telefon": null,
+    "unit": "CI",
+    "team": "CI-PRS",
+    "subteam": null
+  },
+  "status": "success"
+}

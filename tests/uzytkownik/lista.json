@@ -1,0 +1,176 @@
+{
+  "status": "success",
+  "count": 9,
+  "totalCount": 9,
+  "list": [
+    {
+      "id": 1,
+      "name": "bochynskid",
+      "email": "dariusz.bochynski@slaskie.pl",
+      "perms": [
+        "uzytkownicy_modyfikacja",
+        "kierownik_podglad",
+        "slowniki_modyfikacja",
+        "uzytkownik_kontekst_zespol_modyfikacja",
+        "uzytkownicy_podglad",
+        "kierownik_modyfikacja",
+        "rejestr_korekta_modyfikacja",
+        "slowniki_podglad",
+        "rejestr_modyfikacja",
+        "rejestr_podglad",
+        "uzytkownik_kontekst_zespol_podglad",
+        "rejestr_korekta_podglad"
+      ],
+      "imie": "Dariusz",
+      "nazwisko": "Bochyński",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 5096
+    },
+    {
+      "id": 3,
+      "name": "stect",
+      "email": "tomasz.stec@slaskie.pl",
+      "perms": [
+        "raporty_podglad",
+        "kierownik_podglad",
+        "uzytkownik_kontekst_modyfikacja",
+        "uzytkownik_kontekst_zespol_modyfikacja",
+        "uzytkownicy_podglad",
+        "konfiguracja_modyfikacja",
+        "konfiguracja_podglad",
+        "rejestr_modyfikacja",
+        "uzytkownicy_modyfikacja",
+        "slowniki_modyfikacja",
+        "kierownik_modyfikacja",
+        "rejestr_korekta_modyfikacja",
+        "slowniki_podglad",
+        "rejestr_podglad",
+        "uzytkownik_kontekst_podglad",
+        "uzytkownik_kontekst_zespol_podglad",
+        "rejestr_korekta_podglad"
+      ],
+      "imie": "Tomasz",
+      "nazwisko": "Steć",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 2778
+    },
+    {
+      "id": 6,
+      "name": "piastowskid",
+      "email": "daniel.piastowski@slaskie.pl",
+      "perms": [
+        "rejestr_modyfikacja",
+        "rejestr_podglad"
+      ],
+      "imie": "Daniel",
+      "nazwisko": "Piastowski",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 2458
+    },
+    {
+      "id": 8,
+      "name": "cieslaka",
+      "email": "adam.cieslak@slaskie.pl",
+      "perms": [
+        "rejestr_modyfikacja",
+        "rejestr_podglad"
+      ],
+      "imie": "Adam",
+      "nazwisko": "Cieślak",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 1677
+    },
+    {
+      "id": 78,
+      "name": "szczypient",
+      "email": "tomasz.szczypien@slaskie.pl",
+      "perms": [
+        "rejestr_modyfikacja",
+        "rejestr_podglad"
+      ],
+      "imie": "Tomasz",
+      "nazwisko": "Szczypień",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 6779
+    },
+    {
+      "id": 84,
+      "name": "lesniakr",
+      "email": "rafal.lesniak@slaskie.pl",
+      "perms": [
+        "rejestr_modyfikacja",
+        "rejestr_podglad"
+      ],
+      "imie": "Rafał",
+      "nazwisko": "Leśniak",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 918
+    },
+    {
+      "id": 108,
+      "name": "rychtera",
+      "email": "arkadiusz.rychter@slaskie.pl",
+      "perms": [
+        "rejestr_modyfikacja",
+        "rejestr_podglad"
+      ],
+      "imie": "Arkadiusz",
+      "nazwisko": "Rychter",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 1289
+    },
+    {
+      "id": 291,
+      "name": "sleziakp",
+      "email": "piotr.sleziak@slaskie.pl",
+      "perms": [
+        "rejestr_modyfikacja",
+        "rejestr_podglad"
+      ],
+      "imie": "Piotr",
+      "nazwisko": "Śleziak",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 7302
+    },
+    {
+      "id": 792,
+      "name": "mastalerczuka",
+      "email": "arkadiusz.mastalerczuk@slaskie.pl",
+      "perms": [
+        "rejestr_modyfikacja",
+        "rejestr_podglad"
+      ],
+      "imie": "Arkadiusz",
+      "nazwisko": "Mastalerczuk",
+      "slownik_unit_id": "CI",
+      "slownik_team_id": "CI-PRS",
+      "slownik_subteam_id": null,
+      "czy_manager": "Nie",
+      "symbol": 5169
+    }
+  ]
+}

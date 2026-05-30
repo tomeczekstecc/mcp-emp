@@ -107,6 +107,12 @@ def build_server() -> FastMCP:
     from mcp_emp.domains.rejestr import tools as rejestr_tools  # noqa: PLC0415
     rejestr_tools.register(server)
 
+    from mcp_emp.domains.uzytkownik import tools as uzytkownik_tools  # noqa: PLC0415
+    uzytkownik_tools.register(server)
+
+    from mcp_emp.domains.stat import tools as stat_tools  # noqa: PLC0415
+    stat_tools.register(server)
+
     # M4: add_my_task
     # M4-M6: rejestr write tools
 
@@ -117,7 +123,18 @@ async def main() -> None:
     """Async entry point — dispatches to the configured transport."""
     settings = get_settings()
     server = build_server()
+
     if settings.transport == "http":
+        if settings.auth_enabled:
+            from pathlib import Path  # noqa: PLC0415
+
+            from mcp_emp.core.mcp_auth.db import open_db  # noqa: PLC0415
+            from mcp_emp.core.mcp_auth.middleware import ApiKeyMiddleware  # noqa: PLC0415
+
+            conn = open_db(Path(settings.auth_db_path).expanduser())
+            # Wrap the server's Starlette app with auth middleware
+            server._middleware = [(ApiKeyMiddleware, {"db_conn": conn})]  # type: ignore[attr-defined]
+            logger.info("HTTP auth enabled (API-key, db=%s)", settings.auth_db_path)
         await server.run_streamable_http_async()
     else:
         await server.run_stdio_async()

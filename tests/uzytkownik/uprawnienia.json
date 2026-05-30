@@ -1,0 +1,23 @@
+{
+  "user_id": 3,
+  "czy_ma_subteams": "Nie",
+  "perms": [
+    "raporty_podglad",
+    "kierownik_podglad",
+    "uzytkownik_kontekst_modyfikacja",
+    "uzytkownik_kontekst_zespol_modyfikacja",
+    "uzytkownicy_podglad",
+    "konfiguracja_modyfikacja",
+    "konfiguracja_podglad",
+    "rejestr_modyfikacja",
+    "uzytkownicy_modyfikacja",
+    "slowniki_modyfikacja",
+    "kierownik_modyfikacja",
+    "rejestr_korekta_modyfikacja",
+    "slowniki_podglad",
+    "rejestr_podglad",
+    "uzytkownik_kontekst_podglad",
+    "uzytkownik_kontekst_zespol_podglad",
+    "rejestr_korekta_podglad"
+  ]
+}

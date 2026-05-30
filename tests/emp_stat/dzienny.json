@@ -1,0 +1,38 @@
+{
+  "moje": [
+    {
+      "id": 151558,
+      "slownik_typ_zadania_nazwa": "Spotkanie",
+      "dotyczy": "emp mcp",
+      "data_rozpoczecia": "2026-05-30 16:21:48",
+      "data_zakonczenia": "2026-05-30 16:22:09",
+      "punkty": 1,
+      "rodzaj_zadania": null,
+      "ilosc": 1,
+      "waga": 1,
+      "punkty_wagi": 1,
+      "czas": null,
+      "nr_sprawy_sod": null,
+      "tags": null
+    },
+    {
+      "id": 151559,
+      "slownik_typ_zadania_nazwa": "Spotkanie",
+      "dotyczy": "emp mcp",
+      "data_rozpoczecia": "2026-05-30 16:25:59",
+      "data_zakonczenia": "2026-05-30 16:27:36",
+      "punkty": 1,
+      "rodzaj_zadania": null,
+      "ilosc": 1,
+      "waga": 1,
+      "punkty_wagi": 1,
+      "czas": null,
+      "nr_sprawy_sod": null,
+      "tags": null
+    }
+  ],
+  "suma_czas": "000:00",
+  "suma_punkty": 2,
+  "suma_ilosc": 2,
+  "suma_punkty_wagi": 2
+}

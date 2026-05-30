@@ -43,6 +43,10 @@ class Settings(BaseSettings):
     task_type_ttl: int = 600   # 10 minutes
     tag_ttl: int = 300          # 5 minutes
 
+    # MCP API-key auth (for HTTP transport)
+    auth_enabled: bool = False
+    auth_db_path: str = "~/.mcp_emp/auth.db"
+
 
 _settings: Settings | None = None
 
