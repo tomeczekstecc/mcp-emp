@@ -22,6 +22,23 @@ from mcp_emp.domains.rejestr.status import Status
 from mcp_emp.domains.slowniki.contract import Tag
 from mcp_emp.domains.stat.contract import DailyTask
 
+
+def _to_date(value: str | datetime | None) -> date | None:
+    """Parse ISO 8601 string or datetime to date, or return None."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    try:
+        # Handle '2026-04-08T10:15:33+00:00' or '2026-04-08T10:15:33'
+        return datetime.fromisoformat(value.replace('+00:00', '')).date()
+    except (ValueError, AttributeError):
+        return None
+
+
+
 _STALLED_DAYS = 14   # REALIZOWANE without completion for > N days = stalled
 
 
@@ -55,10 +72,10 @@ def build_work_context(
         if t.deadline and t.status not in (
             Status.ZAKONCZONE, Status.ODRZUCONE, Status.WYCOFANE
         ):
-            dl = t.deadline.date() if isinstance(t.deadline, datetime) else t.deadline
-            if dl < today:
+            dl = _to_date(t.deadline)
+            if dl and dl < today:
                 overdue.append(t)
-            elif dl <= horizon:
+            elif dl and dl <= horizon:
                 upcoming.append(t)
 
     # Sort: overdue by deadline asc, upcoming by deadline asc
@@ -108,10 +125,7 @@ def detect_problems(tasks: list[Task], *, stalled_days: int = _STALLED_DAYS) -> 
         if t.status in (Status.ZAKONCZONE, Status.ODRZUCONE, Status.WYCOFANE):
             continue
 
-        deadline_date: date | None = None
-        if t.deadline:
-            dl = t.deadline
-            deadline_date = dl.date() if isinstance(dl, datetime) else dl
+        deadline_date = _to_date(t.deadline)
 
         # Overdue
         if deadline_date and deadline_date < today and t.status not in (
@@ -132,8 +146,9 @@ def detect_problems(tasks: list[Task], *, stalled_days: int = _STALLED_DAYS) -> 
 
         # Stalled — REALIZOWANE with no movement for too long
         if t.status == Status.REALIZOWANE and t.started_at:
-            started = t.started_at
-            started_date = started.date() if isinstance(started, datetime) else started
+            started_date = _to_date(t.started_at)
+            if not started_date:
+                continue
             days_running = (today - started_date).days
             if days_running >= stalled_days:
                 problems.append(Problem(
@@ -247,7 +262,8 @@ def compute_task_type_stats(tasks: list[Task], *, days: int = 30) -> TaskTypeSta
     recent = [
         t for t in tasks
         if t.ordered_at and (
-            t.ordered_at if isinstance(t.ordered_at, datetime) else datetime.min
+            datetime.fromisoformat(t.ordered_at.replace("+00:00", ""))
+            if isinstance(t.ordered_at, str) else t.ordered_at
         ) >= cutoff
     ]
 
@@ -366,10 +382,7 @@ def prioritize_completions(
         score = 0.0
         reasons: list[str] = []
 
-        deadline_date: date | None = None
-        if t.deadline:
-            d = t.deadline
-            deadline_date = d.date() if isinstance(d, datetime) else d
+        deadline_date = _to_date(t.deadline)
 
         # Overdue: very high urgency
         if deadline_date and deadline_date < today:
@@ -390,8 +403,9 @@ def prioritize_completions(
         # Long running without deadline
         days_running: int | None = None
         if t.started_at:
-            s = t.started_at
-            start = s.date() if isinstance(s, datetime) else s
+            start = _to_date(t.started_at)
+            if not start:
+                start = today
             days_running = (today - start).days
             if days_running >= 7 and not deadline_date:
                 score += 10 + days_running

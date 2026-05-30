@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
 from pathlib import Path
 
 from mcp_emp.domains.rejestr.contract import (
@@ -48,7 +47,8 @@ def test_list_mapper_datetime_parsed() -> None:
     tasks = [map_task_from_list(p) for p in payload.list]
     with_date = [t for t in tasks if t.ordered_at is not None]
     assert with_date
-    assert all(isinstance(t.ordered_at, datetime) for t in with_date)
+    assert all(isinstance(t.ordered_at, str) for t in with_date)
+    assert all("+00:00" in (t.ordered_at or "") for t in with_date)
 
 
 def test_list_mapper_tags_always_list() -> None:

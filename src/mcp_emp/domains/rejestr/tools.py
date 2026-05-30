@@ -367,7 +367,7 @@ def register(server: FastMCP) -> None:
             subject=task.subject,
             status=task.status,
             task_type_name=task.task_type.name,
-            ordered_at=task.ordered_at.isoformat() if task.ordered_at else None,
+            ordered_at=task.ordered_at if task.ordered_at else None,
         )
 
         # ── dry_run: preview only, no token ───────────────────────────────────

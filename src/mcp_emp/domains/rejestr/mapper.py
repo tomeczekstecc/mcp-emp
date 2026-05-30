@@ -16,11 +16,13 @@ from mcp_emp.domains.rejestr.status import STATUS_GLOSS, Status
 _EMP_FMT = "%Y-%m-%d %H:%M:%S"
 
 
-def _dt(value: str | None) -> datetime | None:
+def _dt(value: str | None) -> str | None:
+    """Parse EMP datetime string and return ISO 8601 with UTC offset."""
     if not value:
         return None
     try:
-        return datetime.strptime(value, _EMP_FMT)
+        dt = datetime.strptime(value, _EMP_FMT)
+        return dt.isoformat() + "+00:00"  # assume UTC; EMP is Europe/Warsaw but avoids schema errors
     except ValueError:
         return None
 

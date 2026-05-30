@@ -7,8 +7,6 @@ Single-task endpoint wraps in {"item": {...}, "status": "success"}.
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from pydantic import BaseModel
 
 # ── Shared tag shape (appears in both list + detail) ─────────────────────────
@@ -160,10 +158,10 @@ class Task(BaseModel):
     task_type: TaskTypeInfo
     assigned_to: str | None
     created_by: str | None
-    ordered_at: datetime | None
-    deadline: datetime | None
-    started_at: datetime | None
-    completed_at: datetime | None
+    ordered_at: str | None  # ISO 8601
+    deadline: str | None
+    started_at: str | None
+    completed_at: str | None
     quantity: float | None
     time: str | None
     points: float | None
