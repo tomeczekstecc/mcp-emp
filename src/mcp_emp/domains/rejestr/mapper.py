@@ -40,8 +40,8 @@ def _compute_permissions(status: str) -> Permissions:
     return Permissions(
         can_complete=status in (Status.REALIZOWANE, Status.DO_OCENY),
         can_delete=status == Status.W_EDYCJI,
-        can_edit=status == Status.W_EDYCJI,
-        can_start=status == Status.W_EDYCJI,
+        can_edit=status not in (Status.ZAKONCZONE, Status.ODRZUCONE, Status.WYCOFANE),
+        can_start=status == Status.PRZYDZIELONE,
     )
 
 

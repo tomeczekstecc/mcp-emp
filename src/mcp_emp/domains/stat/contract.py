@@ -17,6 +17,16 @@ class CycleStatsPayload(BaseModel):
     cykle_zaspol_punkty: list[CyclePointsPayload] = []
 
 
+class TeamCycleStatsPayload(BaseModel):
+    """Richer payload from /rejestr/kierownik/stat/cykle."""
+    cykle_zaspol_punkty: list[CyclePointsPayload] = []
+    cykle_pracownicy_punkty_kier: list[dict[str, object]] = []
+    cykle_liczba: list[dict[str, object]] = []
+    cykle_liczba_zespol: list[dict[str, object]] = []
+    cykle_tagi: list[dict[str, object]] = []
+    current_user_symbol: int | None = None
+
+
 class CyclePoints(BaseModel):
     cycle: int
     points_default: float | None
@@ -26,6 +36,15 @@ class CyclePoints(BaseModel):
 
 class CycleStats(BaseModel):
     cycles: list[CyclePoints]
+
+
+class TeamCycleStats(BaseModel):
+    """Kierownik-scoped cycle statistics."""
+    cycles: list[CyclePoints]
+    employee_points: list[dict[str, object]]
+    task_counts: list[dict[str, object]]
+    team_task_counts: list[dict[str, object]]
+    tag_breakdown: list[dict[str, object]]
 
 
 # ── Daily stats (/rejestr/stat/dzienny) ──────────────────────────────────────

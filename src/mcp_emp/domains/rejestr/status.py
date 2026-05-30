@@ -11,7 +11,9 @@ class Status(StrEnum):
     """EMP rejestr status identifiers (Polish, as returned by the API)."""
 
     W_EDYCJI = "W_EDYCJI"
+    PRZYDZIELONE = "PRZYDZIELONE"   # planned/assigned, not yet started
     REALIZOWANE = "REALIZOWANE"
+    OCZEKUJACE = "OCZEKUJĄCE"        # waiting (rejected back by manager)
     DO_OCENY = "DO_OCENY"
     ZAKONCZONE = "ZAKOŃCZONE"
     ODRZUCONE = "ODRZUCONE"
@@ -22,8 +24,13 @@ class Status(StrEnum):
 ALIAS_MAP: dict[str, Status] = {
     "draft": Status.W_EDYCJI,
     "w_edycji": Status.W_EDYCJI,
+    "planned": Status.PRZYDZIELONE,
+    "przydzielone": Status.PRZYDZIELONE,
     "in_progress": Status.REALIZOWANE,
     "realizowane": Status.REALIZOWANE,
+    "waiting": Status.OCZEKUJACE,
+    "oczekujace": Status.OCZEKUJACE,
+    "oczekujące": Status.OCZEKUJACE,
     "pending_review": Status.DO_OCENY,
     "do_oceny": Status.DO_OCENY,
     "completed": Status.ZAKONCZONE,
@@ -37,7 +44,9 @@ ALIAS_MAP: dict[str, Status] = {
 
 STATUS_GLOSS: dict[Status, str] = {
     Status.W_EDYCJI: "draft",
+    Status.PRZYDZIELONE: "planned",
     Status.REALIZOWANE: "in progress",
+    Status.OCZEKUJACE: "waiting",
     Status.DO_OCENY: "pending review",
     Status.ZAKONCZONE: "completed",
     Status.ODRZUCONE: "rejected",

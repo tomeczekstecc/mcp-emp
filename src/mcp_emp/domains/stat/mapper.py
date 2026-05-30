@@ -12,6 +12,8 @@ from mcp_emp.domains.stat.contract import (
     DailyStatsPayload,
     DailyTask,
     DailyTaskPayload,
+    TeamCycleStats,
+    TeamCycleStatsPayload,
 )
 
 
@@ -53,4 +55,23 @@ def map_daily_stats(p: DailyStatsPayload) -> DailyStats:
         tasks=tasks,
         total_points=total,
         total_tasks=len(tasks),
+    )
+
+
+def map_team_cycle_stats(p: TeamCycleStatsPayload) -> TeamCycleStats:
+    from mcp_emp.domains.stat.contract import TeamCycleStats  # noqa: PLC0415
+    return TeamCycleStats(
+        cycles=[
+            CyclePoints(
+                cycle=c.nr_cyklu,
+                points_default=c.suma_domyslne,
+                points_manager=c.suma_przelozony,
+                points_employee=c.suma_pracownik,
+            )
+            for c in p.cykle_zaspol_punkty
+        ],
+        employee_points=[dict(r) for r in p.cykle_pracownicy_punkty_kier],
+        task_counts=[dict(r) for r in p.cykle_liczba],
+        team_task_counts=[dict(r) for r in p.cykle_liczba_zespol],
+        tag_breakdown=[dict(r) for r in p.cykle_tagi],
     )

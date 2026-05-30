@@ -9,8 +9,10 @@ from mcp_emp.domains.rejestr.client import (
     complete_my_task,
     create_my_task,
     delete_my_task,
+    edit_my_task,
     fetch_my_tasks,
     fetch_task,
+    start_my_task,
 )
 from mcp_emp.domains.rejestr.contract import Task
 from mcp_emp.domains.rejestr.delete_result import TaskDeletePreview, TaskDeleteResult
@@ -418,3 +420,91 @@ def register(server: FastMCP) -> None:
                 f"Token expires in {confirmations.TOKEN_TTL // 60} minutes."
             ),
         )
+
+    @server.tool()
+    @mutating
+    async def edit_task(
+        task_id: int,
+        subject: str = "",
+        deadline: str = "",
+        notes: str = "",
+        url: str = "",
+        sod_number: str = "",
+        sod_letter: str = "",
+        quantity: float | None = None,
+        time: str = "",
+        tag_ids: list[int] | None = None,
+        dry_run: bool = False,
+    ) -> Task:
+        """Edit an existing task's fields (PUT /rejestr).
+
+        Works on any task not in ZAKOńCZONE, ODRZUCONE, or WYCOFANE status.
+        Only the fields you provide are updated; omitted fields are unchanged.
+
+        Args:
+            task_id:    ID of the task to edit.
+            subject:    New task subject.
+            deadline:   New deadline in ISO 8601 format (e.g. '2026-07-01').
+            notes:      Internal notes (uwagi).
+            url:        Related URL.
+            sod_number: SOD case number.
+            sod_letter: SOD letter number.
+            quantity:   Quantity (ilosc).
+            time:       Time spent in HH:MM format.
+            tag_ids:    Full list of tag IDs to set (replaces existing tags).
+            dry_run:    Preview without calling EMP.
+
+        Returns:
+            Updated Task.
+        """
+        from mcp_emp.domains.rejestr.status import Status  # noqa: PLC0415
+
+        # pre-flight: fetch and check status
+        task = await fetch_task(task_id)
+        if task.status in (Status.ZAKONCZONE, Status.ODRZUCONE, Status.WYCOFANE):
+            from mcp_emp.core.errors import InvalidTransition  # noqa: PLC0415
+            raise InvalidTransition(
+                task_id=task_id, current=task.status, attempted="zapisz"
+            )
+
+        if dry_run:
+            # Return current task with note — no write
+            return task
+
+        return await edit_my_task(
+            task_id=task_id,
+            subject=subject or None,
+            deadline=deadline or None,
+            notes=notes or None,
+            url=url or None,
+            sod_number=sod_number or None,
+            sod_letter=sod_letter or None,
+            quantity=quantity,
+            time=time or None,
+            tag_ids=tag_ids,
+        )
+
+    @server.tool()
+    @mutating
+    async def start_task(task_id: int) -> Task:
+        """Start a planned task (PRZYDZIELONE → REALIZOWANE).
+
+        Tasks created with add_my_task start immediately in REALIZOWANE.
+        This tool is for planned tasks (created with czy_planowane=Tak)
+        that are in PRZYDZIELONE (assigned/planned) status.
+
+        Args:
+            task_id: ID of the task to start.
+
+        Returns:
+            Updated Task in REALIZOWANE status.
+        """
+        from mcp_emp.domains.rejestr.status import Status  # noqa: PLC0415
+
+        task = await fetch_task(task_id)
+        if task.status != Status.PRZYDZIELONE:
+            from mcp_emp.core.errors import InvalidTransition  # noqa: PLC0415
+            raise InvalidTransition(
+                task_id=task_id, current=task.status, attempted="realizuj"
+            )
+        return await start_my_task(task_id)

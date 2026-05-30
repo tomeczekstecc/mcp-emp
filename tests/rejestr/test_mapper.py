@@ -86,7 +86,7 @@ def test_detail_mapper_permissions_w_edycji() -> None:
     assert task.permissions is not None
     assert task.permissions.can_delete is True
     assert task.permissions.can_edit is True
-    assert task.permissions.can_start is True
+    assert task.permissions.can_start is False   # W_EDYCJI is not PRZYDZIELONE
     assert task.permissions.can_complete is False
 
 

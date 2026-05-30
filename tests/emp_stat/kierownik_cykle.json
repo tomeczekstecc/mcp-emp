@@ -1,0 +1,1223 @@
+{
+  "cykle_zaspol_punkty": [
+    {
+      "nr_cyklu": 2622,
+      "suma_domyslne": 82,
+      "suma_przelozony": 82,
+      "suma_pracownik": 82
+    },
+    {
+      "nr_cyklu": 2621,
+      "suma_domyslne": 100,
+      "suma_przelozony": 100,
+      "suma_pracownik": 100
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_domyslne": 98,
+      "suma_przelozony": 98,
+      "suma_pracownik": 98
+    },
+    {
+      "nr_cyklu": 2619,
+      "suma_domyslne": 111,
+      "suma_przelozony": 111,
+      "suma_pracownik": 111
+    },
+    {
+      "nr_cyklu": 2618,
+      "suma_domyslne": 57,
+      "suma_przelozony": 57,
+      "suma_pracownik": 57
+    },
+    {
+      "nr_cyklu": 2617,
+      "suma_domyslne": 72,
+      "suma_przelozony": 72,
+      "suma_pracownik": 72
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_domyslne": 151,
+      "suma_przelozony": 151,
+      "suma_pracownik": 156
+    },
+    {
+      "nr_cyklu": 2615,
+      "suma_domyslne": 67,
+      "suma_przelozony": 67,
+      "suma_pracownik": 67
+    },
+    {
+      "nr_cyklu": 2614,
+      "suma_domyslne": 70,
+      "suma_przelozony": 70,
+      "suma_pracownik": 70
+    },
+    {
+      "nr_cyklu": 2613,
+      "suma_domyslne": 97,
+      "suma_przelozony": 97,
+      "suma_pracownik": 97
+    },
+    {
+      "nr_cyklu": 2612,
+      "suma_domyslne": 78,
+      "suma_przelozony": 78,
+      "suma_pracownik": 78
+    },
+    {
+      "nr_cyklu": 2611,
+      "suma_domyslne": 69,
+      "suma_przelozony": 69,
+      "suma_pracownik": 69
+    }
+  ],
+  "cykle_pracownicy_punkty_kier": [
+    {
+      "nr_cyklu": 2622,
+      "2778": 2,
+      "1677": 25,
+      "918": 25,
+      "7302": 22,
+      "5169": 8
+    },
+    {
+      "nr_cyklu": 2621,
+      "5096": 2,
+      "1677": 38,
+      "918": 32,
+      "5169": 28
+    },
+    {
+      "nr_cyklu": 2620,
+      "1677": 38,
+      "918": 34,
+      "7302": 20,
+      "5169": 6
+    },
+    {
+      "nr_cyklu": 2619,
+      "1677": 20,
+      "918": 30,
+      "7302": 47,
+      "5169": 14
+    },
+    {
+      "nr_cyklu": 2618,
+      "1677": 25,
+      "918": 23,
+      "5169": 9
+    },
+    {
+      "nr_cyklu": 2617,
+      "1677": 29,
+      "918": 30,
+      "5169": 13
+    },
+    {
+      "nr_cyklu": 2616,
+      "1677": 37,
+      "918": 24,
+      "7302": 70,
+      "5169": 20
+    },
+    {
+      "nr_cyklu": 2615,
+      "2778": 3,
+      "1677": 36,
+      "6779": 7,
+      "918": 17,
+      "5169": 4
+    },
+    {
+      "nr_cyklu": 2614,
+      "1677": 40,
+      "918": 28,
+      "7302": 2
+    },
+    {
+      "nr_cyklu": 2613,
+      "1677": 53,
+      "918": 27,
+      "7302": 17
+    },
+    {
+      "nr_cyklu": 2612,
+      "2778": 13,
+      "1677": 39,
+      "918": 22,
+      "7302": 4
+    },
+    {
+      "nr_cyklu": 2611,
+      "1677": 34,
+      "918": 19,
+      "7302": 16
+    }
+  ],
+  "cykle_liczba": [
+    {
+      "nr_cyklu": 2622,
+      "ilosc": 48
+    },
+    {
+      "nr_cyklu": 2621,
+      "ilosc": 65
+    },
+    {
+      "nr_cyklu": 2620,
+      "ilosc": 95
+    },
+    {
+      "nr_cyklu": 2619,
+      "ilosc": 80
+    },
+    {
+      "nr_cyklu": 2618,
+      "ilosc": 31
+    },
+    {
+      "nr_cyklu": 2617,
+      "ilosc": 39
+    },
+    {
+      "nr_cyklu": 2616,
+      "ilosc": 67
+    },
+    {
+      "nr_cyklu": 2615,
+      "ilosc": 47
+    },
+    {
+      "nr_cyklu": 2614,
+      "ilosc": 43
+    },
+    {
+      "nr_cyklu": 2613,
+      "ilosc": 71
+    },
+    {
+      "nr_cyklu": 2612,
+      "ilosc": 53
+    },
+    {
+      "nr_cyklu": 2611,
+      "ilosc": 32
+    },
+    {
+      "nr_cyklu": 2610,
+      "ilosc": 70
+    },
+    {
+      "nr_cyklu": 2609,
+      "ilosc": 25
+    },
+    {
+      "nr_cyklu": 2608,
+      "ilosc": 51
+    },
+    {
+      "nr_cyklu": 2607,
+      "ilosc": 101
+    },
+    {
+      "nr_cyklu": 2606,
+      "ilosc": 109
+    },
+    {
+      "nr_cyklu": 2605,
+      "ilosc": 89
+    },
+    {
+      "nr_cyklu": 2604,
+      "ilosc": 93
+    },
+    {
+      "nr_cyklu": 2603,
+      "ilosc": 62
+    },
+    {
+      "nr_cyklu": 2602,
+      "ilosc": 74
+    },
+    {
+      "nr_cyklu": 2601,
+      "ilosc": 7
+    },
+    {
+      "nr_cyklu": 2568,
+      "ilosc": 4
+    },
+    {
+      "nr_cyklu": 2567,
+      "ilosc": 6
+    },
+    {
+      "nr_cyklu": 2566,
+      "ilosc": 5
+    },
+    {
+      "nr_cyklu": 2565,
+      "ilosc": 18
+    },
+    {
+      "nr_cyklu": 2564,
+      "ilosc": 12
+    },
+    {
+      "nr_cyklu": 2563,
+      "ilosc": 10
+    },
+    {
+      "nr_cyklu": 2562,
+      "ilosc": 10
+    },
+    {
+      "nr_cyklu": 2561,
+      "ilosc": 11
+    },
+    {
+      "nr_cyklu": 2560,
+      "ilosc": 10
+    },
+    {
+      "nr_cyklu": 2559,
+      "ilosc": 16
+    },
+    {
+      "nr_cyklu": 2558,
+      "ilosc": 12
+    },
+    {
+      "nr_cyklu": 2557,
+      "ilosc": 11
+    },
+    {
+      "nr_cyklu": 2556,
+      "ilosc": 10
+    },
+    {
+      "nr_cyklu": 2555,
+      "ilosc": 10
+    },
+    {
+      "nr_cyklu": 2554,
+      "ilosc": 10
+    },
+    {
+      "nr_cyklu": 2553,
+      "ilosc": 6
+    },
+    {
+      "nr_cyklu": 2552,
+      "ilosc": 29
+    },
+    {
+      "nr_cyklu": 2551,
+      "ilosc": 83
+    },
+    {
+      "nr_cyklu": 2550,
+      "ilosc": 68
+    },
+    {
+      "nr_cyklu": 2549,
+      "ilosc": 56
+    },
+    {
+      "nr_cyklu": 2548,
+      "ilosc": 64
+    },
+    {
+      "nr_cyklu": 2547,
+      "ilosc": 71
+    },
+    {
+      "nr_cyklu": 2546,
+      "ilosc": 68
+    },
+    {
+      "nr_cyklu": 2545,
+      "ilosc": 123
+    },
+    {
+      "nr_cyklu": 2544,
+      "ilosc": 140
+    },
+    {
+      "nr_cyklu": 2543,
+      "ilosc": 93
+    },
+    {
+      "nr_cyklu": 2542,
+      "ilosc": 103
+    },
+    {
+      "nr_cyklu": 2541,
+      "ilosc": 83
+    },
+    {
+      "nr_cyklu": 2540,
+      "ilosc": 150
+    },
+    {
+      "nr_cyklu": 2539,
+      "ilosc": 76
+    },
+    {
+      "nr_cyklu": 2538,
+      "ilosc": 103
+    },
+    {
+      "nr_cyklu": 2537,
+      "ilosc": 104
+    },
+    {
+      "nr_cyklu": 2536,
+      "ilosc": 145
+    },
+    {
+      "nr_cyklu": 2535,
+      "ilosc": 74
+    },
+    {
+      "nr_cyklu": 2534,
+      "ilosc": 28
+    },
+    {
+      "nr_cyklu": 2533,
+      "ilosc": 82
+    },
+    {
+      "nr_cyklu": 2532,
+      "ilosc": 86
+    },
+    {
+      "nr_cyklu": 2531,
+      "ilosc": 107
+    },
+    {
+      "nr_cyklu": 2530,
+      "ilosc": 99
+    },
+    {
+      "nr_cyklu": 2529,
+      "ilosc": 227
+    },
+    {
+      "nr_cyklu": 2528,
+      "ilosc": 135
+    },
+    {
+      "nr_cyklu": 2527,
+      "ilosc": 95
+    },
+    {
+      "nr_cyklu": 2526,
+      "ilosc": 112
+    },
+    {
+      "nr_cyklu": 2525,
+      "ilosc": 91
+    },
+    {
+      "nr_cyklu": 2524,
+      "ilosc": 110
+    },
+    {
+      "nr_cyklu": 2523,
+      "ilosc": 164
+    },
+    {
+      "nr_cyklu": 2522,
+      "ilosc": 120
+    },
+    {
+      "nr_cyklu": 2521,
+      "ilosc": 167
+    },
+    {
+      "nr_cyklu": 2520,
+      "ilosc": 152
+    },
+    {
+      "nr_cyklu": 2519,
+      "ilosc": 222
+    },
+    {
+      "nr_cyklu": 2518,
+      "ilosc": 78
+    },
+    {
+      "nr_cyklu": 2517,
+      "ilosc": 109
+    },
+    {
+      "nr_cyklu": 2516,
+      "ilosc": 138
+    },
+    {
+      "nr_cyklu": 2515,
+      "ilosc": 204
+    },
+    {
+      "nr_cyklu": 2514,
+      "ilosc": 170
+    },
+    {
+      "nr_cyklu": 2501,
+      "ilosc": 25
+    }
+  ],
+  "cykle_liczba_zespol": [
+    {
+      "nr_cyklu": 2622,
+      "total": 48,
+      "mine": 2,
+      "rest": 46
+    },
+    {
+      "nr_cyklu": 2621,
+      "total": 65,
+      "mine": 0,
+      "rest": 65
+    },
+    {
+      "nr_cyklu": 2620,
+      "total": 95,
+      "mine": 0,
+      "rest": 95
+    },
+    {
+      "nr_cyklu": 2619,
+      "total": 80,
+      "mine": 0,
+      "rest": 80
+    },
+    {
+      "nr_cyklu": 2618,
+      "total": 31,
+      "mine": 0,
+      "rest": 31
+    },
+    {
+      "nr_cyklu": 2617,
+      "total": 39,
+      "mine": 0,
+      "rest": 39
+    },
+    {
+      "nr_cyklu": 2616,
+      "total": 67,
+      "mine": 0,
+      "rest": 67
+    },
+    {
+      "nr_cyklu": 2615,
+      "total": 47,
+      "mine": 1,
+      "rest": 46
+    },
+    {
+      "nr_cyklu": 2614,
+      "total": 43,
+      "mine": 0,
+      "rest": 43
+    },
+    {
+      "nr_cyklu": 2613,
+      "total": 71,
+      "mine": 0,
+      "rest": 71
+    },
+    {
+      "nr_cyklu": 2612,
+      "total": 53,
+      "mine": 7,
+      "rest": 46
+    },
+    {
+      "nr_cyklu": 2611,
+      "total": 32,
+      "mine": 0,
+      "rest": 32
+    }
+  ],
+  "cykle_tagi": [
+    {
+      "nr_cyklu": 2622,
+      "tag": "Brak tagu",
+      "cnt": 15
+    },
+    {
+      "nr_cyklu": 2622,
+      "tag": "LSI2021",
+      "cnt": 11
+    },
+    {
+      "nr_cyklu": 2622,
+      "tag": "AI",
+      "cnt": 9
+    },
+    {
+      "nr_cyklu": 2622,
+      "tag": "ePW",
+      "cnt": 7
+    },
+    {
+      "nr_cyklu": 2622,
+      "tag": "eDrogi",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2622,
+      "tag": "eMP",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2622,
+      "tag": "GrantyFE",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2621,
+      "tag": "Brak tagu",
+      "cnt": 26
+    },
+    {
+      "nr_cyklu": 2621,
+      "tag": "eDrogi",
+      "cnt": 15
+    },
+    {
+      "nr_cyklu": 2621,
+      "tag": "LSI2021",
+      "cnt": 10
+    },
+    {
+      "nr_cyklu": 2621,
+      "tag": "AI",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2621,
+      "tag": "ePW",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2621,
+      "tag": "Udemy",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2620,
+      "tag": "Brak tagu",
+      "cnt": 24
+    },
+    {
+      "nr_cyklu": 2620,
+      "tag": "LSI2021",
+      "cnt": 13
+    },
+    {
+      "nr_cyklu": 2620,
+      "tag": "ePW",
+      "cnt": 3
+    },
+    {
+      "nr_cyklu": 2620,
+      "tag": "GrantyFE",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2620,
+      "tag": "eMP",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2620,
+      "tag": "eDrogi",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2620,
+      "tag": "Sharepoint",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2620,
+      "tag": "LSI2014",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2619,
+      "tag": "ePW",
+      "cnt": 25
+    },
+    {
+      "nr_cyklu": 2619,
+      "tag": "Brak tagu",
+      "cnt": 14
+    },
+    {
+      "nr_cyklu": 2619,
+      "tag": "LSI2021",
+      "cnt": 10
+    },
+    {
+      "nr_cyklu": 2619,
+      "tag": "eDrogi",
+      "cnt": 5
+    },
+    {
+      "nr_cyklu": 2618,
+      "tag": "Brak tagu",
+      "cnt": 16
+    },
+    {
+      "nr_cyklu": 2618,
+      "tag": "LSI2021",
+      "cnt": 6
+    },
+    {
+      "nr_cyklu": 2618,
+      "tag": "eDrogi",
+      "cnt": 5
+    },
+    {
+      "nr_cyklu": 2618,
+      "tag": "GrantyFE",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2617,
+      "tag": "Brak tagu",
+      "cnt": 17
+    },
+    {
+      "nr_cyklu": 2617,
+      "tag": "GrantyFE",
+      "cnt": 7
+    },
+    {
+      "nr_cyklu": 2617,
+      "tag": "LSI2021",
+      "cnt": 6
+    },
+    {
+      "nr_cyklu": 2617,
+      "tag": "eDrogi",
+      "cnt": 3
+    },
+    {
+      "nr_cyklu": 2617,
+      "tag": "ePW",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2617,
+      "tag": "LSI2014",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2617,
+      "tag": "Udemy",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2616,
+      "tag": "Brak tagu",
+      "cnt": 26
+    },
+    {
+      "nr_cyklu": 2616,
+      "tag": "ePW",
+      "cnt": 22
+    },
+    {
+      "nr_cyklu": 2616,
+      "tag": "eDrogi",
+      "cnt": 7
+    },
+    {
+      "nr_cyklu": 2616,
+      "tag": "LSI2021",
+      "cnt": 4
+    },
+    {
+      "nr_cyklu": 2616,
+      "tag": "Sharepoint",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2616,
+      "tag": "GrantyFE",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2616,
+      "tag": "LSI2014",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2616,
+      "tag": "Udemy",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2615,
+      "tag": "Brak tagu",
+      "cnt": 26
+    },
+    {
+      "nr_cyklu": 2615,
+      "tag": "LSI2021",
+      "cnt": 7
+    },
+    {
+      "nr_cyklu": 2615,
+      "tag": "GrantyFE",
+      "cnt": 3
+    },
+    {
+      "nr_cyklu": 2615,
+      "tag": "Udemy",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2614,
+      "tag": "Brak tagu",
+      "cnt": 26
+    },
+    {
+      "nr_cyklu": 2614,
+      "tag": "LSI2021",
+      "cnt": 7
+    },
+    {
+      "nr_cyklu": 2614,
+      "tag": "ePW",
+      "cnt": 3
+    },
+    {
+      "nr_cyklu": 2614,
+      "tag": "Sharepoint",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2614,
+      "tag": "LSI2014",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2613,
+      "tag": "Brak tagu",
+      "cnt": 32
+    },
+    {
+      "nr_cyklu": 2613,
+      "tag": "ePW",
+      "cnt": 11
+    },
+    {
+      "nr_cyklu": 2613,
+      "tag": "GrantyFE",
+      "cnt": 4
+    },
+    {
+      "nr_cyklu": 2613,
+      "tag": "LSI2021",
+      "cnt": 3
+    },
+    {
+      "nr_cyklu": 2613,
+      "tag": "Sharepoint",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2613,
+      "tag": "AI",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2612,
+      "tag": "Brak tagu",
+      "cnt": 29
+    },
+    {
+      "nr_cyklu": 2612,
+      "tag": "GrantyFE",
+      "cnt": 7
+    },
+    {
+      "nr_cyklu": 2612,
+      "tag": "AI",
+      "cnt": 4
+    },
+    {
+      "nr_cyklu": 2612,
+      "tag": "ePW",
+      "cnt": 2
+    },
+    {
+      "nr_cyklu": 2612,
+      "tag": "LSI2021",
+      "cnt": 1
+    },
+    {
+      "nr_cyklu": 2611,
+      "tag": "Brak tagu",
+      "cnt": 17
+    },
+    {
+      "nr_cyklu": 2611,
+      "tag": "ePW",
+      "cnt": 9
+    },
+    {
+      "nr_cyklu": 2611,
+      "tag": "LSI2021",
+      "cnt": 5
+    }
+  ],
+  "cykle_zadania_nadrzedne_przedluzenia": [],
+  "cykle_tagi_punkty_przelozonego": [
+    {
+      "nr_cyklu": 2622,
+      "suma_przelozony": 12,
+      "tag": "AI"
+    },
+    {
+      "nr_cyklu": 2622,
+      "suma_przelozony": 1,
+      "tag": "eDrogi"
+    },
+    {
+      "nr_cyklu": 2622,
+      "suma_przelozony": 3,
+      "tag": "eMP"
+    },
+    {
+      "nr_cyklu": 2622,
+      "suma_przelozony": 19,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2622,
+      "suma_przelozony": 1,
+      "tag": "GrantyFE"
+    },
+    {
+      "nr_cyklu": 2622,
+      "suma_przelozony": 19,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2622,
+      "suma_przelozony": 27,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2621,
+      "suma_przelozony": 3,
+      "tag": "AI"
+    },
+    {
+      "nr_cyklu": 2621,
+      "suma_przelozony": 20,
+      "tag": "eDrogi"
+    },
+    {
+      "nr_cyklu": 2621,
+      "suma_przelozony": 4,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2621,
+      "suma_przelozony": 19,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2621,
+      "suma_przelozony": 2,
+      "tag": "Udemy"
+    },
+    {
+      "nr_cyklu": 2621,
+      "suma_przelozony": 52,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_przelozony": 3,
+      "tag": "eDrogi"
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_przelozony": 5,
+      "tag": "eMP"
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_przelozony": 18,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_przelozony": 3,
+      "tag": "GrantyFE"
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_przelozony": 3,
+      "tag": "LSI2014"
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_przelozony": 22,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_przelozony": 2,
+      "tag": "Sharepoint"
+    },
+    {
+      "nr_cyklu": 2620,
+      "suma_przelozony": 42,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2619,
+      "suma_przelozony": 6,
+      "tag": "eDrogi"
+    },
+    {
+      "nr_cyklu": 2619,
+      "suma_przelozony": 56,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2619,
+      "suma_przelozony": 24,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2619,
+      "suma_przelozony": 25,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2618,
+      "suma_przelozony": 7,
+      "tag": "eDrogi"
+    },
+    {
+      "nr_cyklu": 2618,
+      "suma_przelozony": 4,
+      "tag": "GrantyFE"
+    },
+    {
+      "nr_cyklu": 2618,
+      "suma_przelozony": 15,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2618,
+      "suma_przelozony": 31,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2617,
+      "suma_przelozony": 5,
+      "tag": "eDrogi"
+    },
+    {
+      "nr_cyklu": 2617,
+      "suma_przelozony": 2,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2617,
+      "suma_przelozony": 14,
+      "tag": "GrantyFE"
+    },
+    {
+      "nr_cyklu": 2617,
+      "suma_przelozony": 3,
+      "tag": "LSI2014"
+    },
+    {
+      "nr_cyklu": 2617,
+      "suma_przelozony": 11,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2617,
+      "suma_przelozony": 4,
+      "tag": "Udemy"
+    },
+    {
+      "nr_cyklu": 2617,
+      "suma_przelozony": 33,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_przelozony": 13,
+      "tag": "eDrogi"
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_przelozony": 69,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_przelozony": 4,
+      "tag": "GrantyFE"
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_przelozony": 2,
+      "tag": "LSI2014"
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_przelozony": 10,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_przelozony": 4,
+      "tag": "Sharepoint"
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_przelozony": 2,
+      "tag": "Udemy"
+    },
+    {
+      "nr_cyklu": 2616,
+      "suma_przelozony": 47,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2615,
+      "suma_przelozony": 8,
+      "tag": "GrantyFE"
+    },
+    {
+      "nr_cyklu": 2615,
+      "suma_przelozony": 17,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2615,
+      "suma_przelozony": 2,
+      "tag": "Udemy"
+    },
+    {
+      "nr_cyklu": 2615,
+      "suma_przelozony": 40,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2614,
+      "suma_przelozony": 5,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2614,
+      "suma_przelozony": 3,
+      "tag": "LSI2014"
+    },
+    {
+      "nr_cyklu": 2614,
+      "suma_przelozony": 15,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2614,
+      "suma_przelozony": 4,
+      "tag": "Sharepoint"
+    },
+    {
+      "nr_cyklu": 2614,
+      "suma_przelozony": 43,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2613,
+      "suma_przelozony": 2,
+      "tag": "AI"
+    },
+    {
+      "nr_cyklu": 2613,
+      "suma_przelozony": 24,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2613,
+      "suma_przelozony": 7,
+      "tag": "GrantyFE"
+    },
+    {
+      "nr_cyklu": 2613,
+      "suma_przelozony": 5,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2613,
+      "suma_przelozony": 4,
+      "tag": "Sharepoint"
+    },
+    {
+      "nr_cyklu": 2613,
+      "suma_przelozony": 55,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2612,
+      "suma_przelozony": 7,
+      "tag": "AI"
+    },
+    {
+      "nr_cyklu": 2612,
+      "suma_przelozony": 4,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2612,
+      "suma_przelozony": 18,
+      "tag": "GrantyFE"
+    },
+    {
+      "nr_cyklu": 2612,
+      "suma_przelozony": 1,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2612,
+      "suma_przelozony": 48,
+      "tag": "Brak tagu"
+    },
+    {
+      "nr_cyklu": 2611,
+      "suma_przelozony": 24,
+      "tag": "ePW"
+    },
+    {
+      "nr_cyklu": 2611,
+      "suma_przelozony": 11,
+      "tag": "LSI2021"
+    },
+    {
+      "nr_cyklu": 2611,
+      "suma_przelozony": 34,
+      "tag": "Brak tagu"
+    }
+  ],
+  "current_user_symbol": 2778
+}

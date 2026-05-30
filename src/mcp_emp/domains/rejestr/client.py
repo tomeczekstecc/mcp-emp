@@ -155,6 +155,75 @@ async def complete_my_task(
     return await fetch_task(task_id)
 
 
+async def edit_my_task(
+    task_id: int,
+    subject: str | None = None,
+    deadline: str | None = None,
+    notes: str | None = None,
+    url: str | None = None,
+    sod_number: str | None = None,
+    sod_letter: str | None = None,
+    quantity: float | None = None,
+    time: str | None = None,
+    tag_ids: list[int] | None = None,
+) -> Task:
+    """PUT /rejestr — update task fields (any non-ZAKOŃCZONE task).
+
+    Returns the updated task fetched after the edit.
+    """
+    body: dict[str, object] = {"id": task_id}
+    if subject is not None:
+        body["dotyczy"] = subject
+    if deadline is not None:
+        body["data_termin"] = deadline
+    if notes is not None:
+        body["uwagi"] = notes
+    if url is not None:
+        body["url"] = url
+    if sod_number is not None:
+        body["nr_sprawy_sod"] = sod_number
+    if sod_letter is not None:
+        body["nr_pisma_sod"] = sod_letter
+    if quantity is not None:
+        body["ilosc"] = quantity
+    if time is not None:
+        body["czas"] = time
+    if tag_ids is not None:
+        body["tags"] = tag_ids
+
+    r = await get_client().put("/rejestr", json=body, headers=await _bearer())
+    if r.status_code == 404:
+        raise TaskNotFound(task_id)
+    if r.status_code != 200:
+        try:
+            msg = r.json().get("message", r.text[:200])
+        except Exception:  # noqa: BLE001
+            msg = r.text[:200]
+        raise EmpRejected(
+            f"EMP rejected edit: {msg}",
+            {"task_id": task_id, "status_code": r.status_code, "message": msg},
+        )
+    return await fetch_task(task_id)
+
+
+async def start_my_task(task_id: int) -> Task:
+    """PUT /rejestr/realizuj — start a planned (PRZYDZIELONE) task.
+
+    Transitions PRZYDZIELONE → REALIZOWANE.
+    Returns the updated task.
+    """
+    r = await get_client().put(
+        "/rejestr/realizuj", json={"id": task_id}, headers=await _bearer()
+    )
+    if r.status_code == 404:
+        raise TaskNotFound(task_id)
+    if r.status_code != 200:
+        raise InvalidTransition(
+            task_id=task_id, current="not PRZYDZIELONE", attempted="realizuj"
+        )
+    return await fetch_task(task_id)
+
+
 async def delete_my_task(task_id: int) -> None:
     """DELETE /rejestr/{id} — permanently delete a W_EDYCJI task.
 

@@ -10,8 +10,10 @@ from mcp_emp.domains.stat.contract import (
     CycleStatsPayload,
     DailyStats,
     DailyStatsPayload,
+    TeamCycleStats,
+    TeamCycleStatsPayload,
 )
-from mcp_emp.domains.stat.mapper import map_cycle_stats, map_daily_stats
+from mcp_emp.domains.stat.mapper import map_cycle_stats, map_daily_stats, map_team_cycle_stats
 
 
 async def _bearer() -> dict[str, str]:
@@ -40,3 +42,14 @@ async def fetch_daily_stats(scope: str = "") -> DailyStats:
         raise EmpRejected(f"EMP {r.status_code} on {path}",
                           {"status_code": r.status_code})
     return map_daily_stats(DailyStatsPayload.model_validate(r.json()))
+
+
+async def fetch_team_cycle_stats() -> TeamCycleStats:
+    """Fetch richer cycle stats for kierownik scope."""
+    r = await get_client().get(
+        "/rejestr/kierownik/stat/cykle", headers=await _bearer()
+    )
+    if r.status_code != 200:
+        raise EmpRejected(f"EMP {r.status_code} on kierownik/stat/cykle",
+                          {"status_code": r.status_code})
+    return map_team_cycle_stats(TeamCycleStatsPayload.model_validate(r.json()))
